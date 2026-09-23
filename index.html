@@ -3,1375 +3,1270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Computer Concepts & Peripherals Explorer</title>
-    <!-- Tailwind CSS for UI Styling -->
+    <title>IPO Hardware Mastery Game</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Canvas Confetti for Achievements -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae0fd',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        },
+                        inputCat: {
+                            light: '#eff6ff',
+                            border: '#93c5fd',
+                            text: '#1e40af',
+                            badge: '#dbeafe'
+                        },
+                        procCat: {
+                            light: '#faf5ff',
+                            border: '#d8b4fe',
+                            text: '#6b21a8',
+                            badge: '#f3e8ff'
+                        },
+                        outCat: {
+                            light: '#ecfdf5',
+                            border: '#6ee7b7',
+                            text: '#065f46',
+                            badge: '#d1fae5'
+                        },
+                        storeCat: {
+                            light: '#fffbeb',
+                            border: '#fde047',
+                            text: '#92400e',
+                            badge: '#fef3c7'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
-
-        :root {
-            --font-heading: 'Fredoka', cursive, sans-serif;
-            --font-body: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            font-family: var(--font-body);
-            background-color: #F4F7FC;
-            color: #1E293B;
-            font-size: 1.125rem; /* Large 18px base text for high legibility */
-            line-height: 1.6;
-        }
-
-        h1, h2, h3, h4, .font-heading {
-            font-family: var(--font-heading);
-            letter-spacing: 0.02em;
-        }
-
-        /* 3D Card Flip Animation Utilities */
+        /* Custom 3D perspective flip card styling */
         .perspective-1000 {
             perspective: 1000px;
+            -webkit-perspective: 1000px;
         }
-        
         .transform-style-3d {
             transform-style: preserve-3d;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            -webkit-transform-style: preserve-3d;
         }
-        
         .backface-hidden {
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
         }
-        
         .rotate-y-180 {
             transform: rotateY(180deg);
-        }
-
-        .bg-pattern {
-            background-image: radial-gradient(#CBD5E1 1.5px, transparent 1.5px);
-            background-size: 28px 28px;
-        }
-
-        .card-shadow {
-            box-shadow: 0 10px 25px -5px rgba(148, 163, 184, 0.2), 0 8px 10px -6px rgba(148, 163, 184, 0.15);
-        }
-
-        .card-shadow-hover {
-            transition: all 0.3s ease;
+            -webkit-transform: rotateY(180deg);
         }
         
-        .card-shadow-hover:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 28px -6px rgba(99, 102, 241, 0.25);
+        /* Smooth transitions */
+        .card-flip-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Drag and Drop Visual Cues */
-        .drag-over {
-            border-color: #4F46E5 !important;
-            background-color: #EEF2FF !important;
-            transform: scale(1.02);
+        /* Pulse animation for timer */
+        @keyframes subtlePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(1.02); }
+        }
+        .pulse-timer {
+            animation: subtlePulse 1.5s infinite ease-in-out;
         }
 
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 15px rgba(79, 70, 229, 0.3); }
-            50% { box-shadow: 0 0 25px rgba(79, 70, 229, 0.6); }
-        }
-
-        .glow-active {
-            animation: pulseGlow 1.8s infinite;
-        }
-
-        /* Custom readable scrollbar */
+        /* Custom scrollbar for game logs & cards */
         ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #E2E8F0;
-            border-radius: 10px;
+            background: #f1f5f9;
+            border-radius: 9999px;
         }
         ::-webkit-scrollbar-thumb {
-            background: #818CF8;
-            border-radius: 10px;
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-pattern">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col selection:bg-blue-200 selection:text-blue-900 text-base">
 
-    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b-4 border-indigo-200 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Logo & Title -->
-                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('ipo')">
-                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-2xl flex items-center justify-center text-white shadow-md text-2xl font-bold">
-                        <i class="fa-solid fa-desktop"></i>
-                    </div>
-                    <div>
-                        <span class="text-2xl font-extrabold font-heading text-indigo-950 tracking-wide">Computer Concepts</span>
-                        <span class="block text-xs font-bold uppercase tracking-wider text-indigo-600">Input • Process • Output Lab</span>
-                    </div>
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-[1700px] mx-auto px-4 sm:px-8 h-22 flex items-center justify-between py-3">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('game')">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-blue-200">
+                    <i class="fa-solid font-bold fa-microchip text-3xl"></i>
                 </div>
-
-                <!-- Navigation Bar -->
-                <nav class="hidden lg:flex space-x-2">
-                    <button onclick="switchTab('ipo')" id="nav-ipo" class="nav-btn px-4 py-2.5 rounded-2xl text-base font-bold transition-all text-indigo-700 bg-indigo-50 border border-indigo-200 shadow-sm flex items-center gap-2">
-                        <i class="fa-solid fa-arrows-split-up-and-left text-amber-500"></i> 1. IPO Cycle
-                    </button>
-                    <button onclick="switchTab('peripherals')" id="nav-peripherals" class="nav-btn px-4 py-2.5 rounded-2xl text-base font-bold transition-all text-slate-700 hover:bg-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-plug-circle-bolt text-indigo-600"></i> 2. Peripherals Deck
-                    </button>
-                    <button onclick="switchTab('guessing')" id="nav-guessing" class="nav-btn px-4 py-2.5 rounded-2xl text-base font-bold transition-all text-slate-700 hover:bg-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-circle-question text-emerald-600"></i> 3. Guessing Game
-                    </button>
-                    <button onclick="switchTab('inside-pc')" id="nav-inside-pc" class="nav-btn px-4 py-2.5 rounded-2xl text-base font-bold transition-all text-slate-700 hover:bg-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-microchip text-purple-600"></i> 4. System Unit
-                    </button>
-                    <button onclick="switchTab('quiz')" id="nav-quiz" class="nav-btn px-4 py-2.5 rounded-2xl text-base font-bold transition-all text-slate-700 hover:bg-slate-100 flex items-center gap-2">
-                        <i class="fa-solid fa-trophy text-amber-500"></i> 5. Mastery Quiz
-                    </button>
-                </nav>
-
-                <!-- Sound and Score Display -->
-                <div class="flex items-center space-x-3">
-                    <button id="soundToggle" onclick="toggleAudio()" class="w-12 h-12 bg-slate-100 hover:bg-indigo-100 rounded-2xl flex items-center justify-center text-slate-700 transition-colors" title="Toggle Sound">
-                        <i class="fa-solid fa-volume-high text-xl" id="soundIcon"></i>
-                    </button>
-                    <div class="bg-amber-100 border-2 border-amber-300 px-4 py-2 rounded-2xl flex items-center gap-2 shadow-sm">
-                        <i class="fa-solid fa-star text-amber-500 text-2xl"></i>
-                        <span id="globalXP" class="font-extrabold text-amber-950 text-xl">0 XP</span>
-                    </div>
+                <div>
+                    <h1 class="font-extrabold text-2xl leading-tight text-slate-900">IPO Hardware Quest</h1>
+                    <p class="text-sm text-slate-500 font-medium">Input • Processing • Output • Storage</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Mobile Navigation Sub-bar -->
-        <div class="lg:hidden flex overflow-x-auto py-2.5 px-4 space-x-2 bg-slate-50 border-t border-slate-200">
-            <button onclick="switchTab('ipo')" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap bg-indigo-600 text-white">IPO Cycle</button>
-            <button onclick="switchTab('peripherals')" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap bg-slate-200 text-slate-800">Peripherals</button>
-            <button onclick="switchTab('guessing')" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap bg-slate-200 text-slate-800">Guessing Game</button>
-            <button onclick="switchTab('inside-pc')" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap bg-slate-200 text-slate-800">System Unit</button>
-            <button onclick="switchTab('quiz')" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap bg-slate-200 text-slate-800">Quiz</button>
+            <!-- Navigation Tabs -->
+            <nav class="flex space-x-1.5 sm:space-x-2 bg-slate-100 p-2 rounded-2xl border border-slate-200">
+                <button id="nav-tab-game" onclick="switchTab('game')" class="flex items-center space-x-2 px-4 sm:px-6 py-2.5 rounded-xl text-sm sm:text-base font-bold transition-all duration-200 bg-white text-blue-600 shadow-sm">
+                    <i class="fa-solid fa-gamepad text-lg"></i>
+                    <span>Categorization Game</span>
+                </button>
+                <button id="nav-tab-flashcards" onclick="switchTab('flashcards')" class="flex items-center space-x-2 px-4 sm:px-6 py-2.5 rounded-xl text-sm sm:text-base font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition-all duration-200">
+                    <i class="fa-solid fa-layer-group text-lg"></i>
+                    <span>Study Flashcards</span>
+                </button>
+                <button id="nav-tab-reference" onclick="switchTab('reference')" class="flex items-center space-x-2 px-4 sm:px-6 py-2.5 rounded-xl text-sm sm:text-base font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-200/50 transition-all duration-200">
+                    <i class="fa-solid fa-book-open text-lg"></i>
+                    <span>Quick Guide</span>
+                </button>
+            </nav>
         </div>
     </header>
 
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-[1700px] w-full mx-auto px-4 sm:px-8 py-8 flex flex-col justify-center">
 
-        <!-- =================================================================== -->
-        <!-- TAB 1: THE INPUT - PROCESS - OUTPUT (IPO) CYCLE                     -->
-        <!-- =================================================================== -->
-        <section id="tab-ipo" class="tab-content space-y-8">
-            <!-- Hero Banner -->
-            <div class="bg-gradient-to-r from-indigo-500 via-blue-600 to-teal-500 rounded-3xl p-8 text-white card-shadow relative overflow-hidden">
-                <div class="max-w-3xl relative z-10 space-y-3">
-                    <span class="bg-white/20 text-white font-extrabold text-sm px-4 py-1.5 rounded-full uppercase tracking-wider backdrop-blur-sm">
-                        💡 Core Computer Concept
-                    </span>
-                    <h1 class="text-4xl sm:text-5xl font-extrabold">The Input-Process-Output (IPO) Cycle</h1>
-                    <p class="text-xl text-indigo-50 font-medium">
-                        Every computer functions using three simple core stages: <strong class="text-amber-300 underline">INPUT</strong>, <strong class="text-emerald-300 underline">PROCESS</strong>, and <strong class="text-cyan-300 underline">OUTPUT</strong>!
-                    </p>
+        <!-- SECTION 1: CATEGORIZATION GAME -->
+        <section id="section-game" class="block space-y-8 w-full">
+
+            <!-- Game Dashboard / Start Screen -->
+            <div id="game-start-view" class="bg-white rounded-3xl border border-slate-200 p-8 sm:p-12 shadow-md text-center max-w-4xl mx-auto my-4 w-full">
+                <div class="inline-flex p-6 rounded-3xl bg-blue-50 text-blue-600 mb-6 ring-8 ring-blue-50/50">
+                    <i class="fa-solid fa-graduation-cap text-6xl"></i>
                 </div>
-                <i class="fa-solid fa-gears absolute -right-6 -bottom-6 text-9xl text-white/10 rotate-12"></i>
-            </div>
-
-            <!-- The 3 Core Stages Cards (Strictly Input, Process, Output) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- 1. INPUT -->
-                <div class="bg-white border-4 border-amber-300 rounded-3xl p-6 card-shadow card-shadow-hover flex flex-col justify-between">
-                    <div>
-                        <div class="w-14 h-14 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center text-3xl font-black mb-4">
-                            1
-                        </div>
-                        <h2 class="text-2xl font-extrabold text-amber-950 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-keyboard text-amber-500"></i> INPUT
-                        </h2>
-                        <p class="text-slate-700 text-lg mb-4">
-                            The computer <strong>accepts initial data and commands</strong> provided by the user.
-                        </p>
-                    </div>
-                    <div class="bg-amber-50 rounded-2xl p-4 border border-amber-200 text-base font-bold text-amber-900">
-                        📌 <strong>Example:</strong> Typing letters on a keyboard or clicking with a mouse.
-                    </div>
-                </div>
-
-                <!-- 2. PROCESS -->
-                <div class="bg-white border-4 border-emerald-300 rounded-3xl p-6 card-shadow card-shadow-hover flex flex-col justify-between">
-                    <div>
-                        <div class="w-14 h-14 bg-emerald-100 text-emerald-700 rounded-2xl flex items-center justify-center text-3xl font-black mb-4">
-                            2
-                        </div>
-                        <h2 class="text-2xl font-extrabold text-emerald-950 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-microchip text-emerald-500"></i> PROCESS
-                        </h2>
-                        <p class="text-slate-700 text-lg mb-4">
-                            The computer <strong>analyzes gathered data and executes tasks</strong> using the CPU (Central Processing Unit).
-                        </p>
-                    </div>
-                    <div class="bg-emerald-50 rounded-2xl p-4 border border-emerald-200 text-base font-bold text-emerald-900">
-                        📌 <strong>Example:</strong> Calculating math, sorting lists, or following program code instructions.
-                    </div>
-                </div>
-
-                <!-- 3. OUTPUT -->
-                <div class="bg-white border-4 border-cyan-300 rounded-3xl p-6 card-shadow card-shadow-hover flex flex-col justify-between">
-                    <div>
-                        <div class="w-14 h-14 bg-cyan-100 text-cyan-700 rounded-2xl flex items-center justify-center text-3xl font-black mb-4">
-                            3
-                        </div>
-                        <h2 class="text-2xl font-extrabold text-cyan-950 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-desktop text-cyan-500"></i> OUTPUT
-                        </h2>
-                        <p class="text-slate-700 text-lg mb-4">
-                            The computer <strong>displays or delivers the final processed results</strong> for the user.
-                        </p>
-                    </div>
-                    <div class="bg-cyan-50 rounded-2xl p-4 border border-cyan-200 text-base font-bold text-cyan-900">
-                        📌 <strong>Example:</strong> Displaying pictures on a monitor screen or printing paper documents.
-                    </div>
-                </div>
-            </div>
-
-            <!-- Interactive IPO Machine Animation -->
-            <div class="bg-white rounded-3xl p-8 border-2 border-indigo-100 card-shadow space-y-6">
-                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-                    <div>
-                        <h2 class="text-3xl font-extrabold text-slate-900">⚙️ Interactive IPO Cycle Machine</h2>
-                        <p class="text-slate-600 text-base">Select a scenario to observe how data moves through the 3 core stages!</p>
-                    </div>
-                    <!-- Scenario Switchers -->
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="loadIPOScenario('desktop')" id="btn-scen-desktop" class="scen-btn px-4 py-2.5 rounded-xl font-extrabold text-base bg-indigo-600 text-white shadow">
-                            💻 Typing an Essay
-                        </button>
-                        <button onclick="loadIPOScenario('math')" id="btn-scen-math" class="scen-btn px-4 py-2.5 rounded-xl font-extrabold text-base bg-slate-100 text-slate-700 hover:bg-slate-200">
-                            🧮 Math Calculator
-                        </button>
-                        <button onclick="loadIPOScenario('camera')" id="btn-scen-camera" class="scen-btn px-4 py-2.5 rounded-xl font-extrabold text-base bg-slate-100 text-slate-700 hover:bg-slate-200">
-                            📷 Video Recording
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Step Flow Visualization -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-                    <!-- Stage 1: Input -->
-                    <div id="ipo-step-1" class="bg-amber-50 border-3 border-amber-300 rounded-3xl p-6 text-center relative flex flex-col items-center">
-                        <span class="bg-amber-500 text-white font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider mb-3">STAGE 1: INPUT</span>
-                        <div id="ipo-icon-1" class="w-24 h-24 bg-amber-100 rounded-2xl flex items-center justify-center text-5xl text-amber-700 mb-4 shadow-inner">
-                            <i class="fa-solid fa-keyboard"></i>
-                        </div>
-                        <h3 id="ipo-title-1" class="text-2xl font-extrabold text-amber-950 mb-2">Keyboard</h3>
-                        <p id="ipo-desc-1" class="text-slate-700 text-base">User presses keys to send letters and commands into the computer.</p>
-                    </div>
-
-                    <!-- Stage 2: Process -->
-                    <div id="ipo-step-2" class="bg-emerald-50 border-3 border-emerald-300 rounded-3xl p-6 text-center relative flex flex-col items-center">
-                        <span class="bg-emerald-500 text-white font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider mb-3">STAGE 2: PROCESS</span>
-                        <div id="ipo-icon-2" class="w-24 h-24 bg-emerald-100 rounded-2xl flex items-center justify-center text-5xl text-emerald-700 mb-4 shadow-inner">
-                            <i class="fa-solid fa-microchip"></i>
-                        </div>
-                        <h3 id="ipo-title-2" class="text-2xl font-extrabold text-emerald-950 mb-2">Computer / CPU</h3>
-                        <p id="ipo-desc-2" class="text-slate-700 text-base">The CPU processes the keypresses and formats the text document.</p>
-                    </div>
-
-                    <!-- Stage 3: Output -->
-                    <div id="ipo-step-3" class="bg-cyan-50 border-3 border-cyan-300 rounded-3xl p-6 text-center relative flex flex-col items-center">
-                        <span class="bg-cyan-500 text-white font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider mb-3">STAGE 3: OUTPUT</span>
-                        <div id="ipo-icon-3" class="w-24 h-24 bg-cyan-100 rounded-2xl flex items-center justify-center text-5xl text-cyan-700 mb-4 shadow-inner">
-                            <i class="fa-solid fa-desktop"></i>
-                        </div>
-                        <h3 id="ipo-title-3" class="text-2xl font-extrabold text-cyan-950 mb-2">Monitor Screen</h3>
-                        <p id="ipo-desc-3" class="text-slate-700 text-base">Displays the formatted words clearly on the screen for the user.</p>
-                    </div>
-                </div>
-
-                <!-- Simulation Trigger -->
-                <div class="text-center pt-4 border-t border-slate-100">
-                    <button onclick="runIPOSimulation()" class="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white text-xl font-extrabold px-8 py-4 rounded-2xl shadow-lg transition-transform hover:scale-105 inline-flex items-center gap-3">
-                        <i class="fa-solid fa-play"></i> Run Data Cycle Simulation
-                    </button>
-                    <p id="ipo-sim-status" class="mt-3 text-base font-bold text-slate-600">Click to trace data moving from Input $\rightarrow$ Process $\rightarrow$ Output!</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- =================================================================== -->
-        <!-- TAB 2: COMPUTER PERIPHERALS DECK (Input, Output, Storage)           -->
-        <!-- =================================================================== -->
-        <section id="tab-peripherals" class="tab-content space-y-8 hidden">
-            <!-- Header and Filters -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border-2 border-indigo-100 card-shadow">
-                <div>
-                    <h2 class="text-3xl font-extrabold text-slate-900 flex items-center gap-3">
-                        <i class="fa-solid fa-plug-circle-bolt text-indigo-600"></i> Computer Peripherals Explorer
-                    </h2>
-                    <p class="text-slate-600 text-base">Peripherals are external hardware devices connected to the system unit. Click a card to flip!</p>
-                </div>
-                <!-- Category Filters -->
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="filterPeripherals('ALL')" class="p-filter-btn px-4 py-2 rounded-xl font-extrabold text-sm bg-indigo-600 text-white shadow">All Devices</button>
-                    <button onclick="filterPeripherals('INPUT')" class="p-filter-btn px-4 py-2 rounded-xl font-extrabold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200">Input Only</button>
-                    <button onclick="filterPeripherals('OUTPUT')" class="p-filter-btn px-4 py-2 rounded-xl font-extrabold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200">Output Only</button>
-                    <button onclick="filterPeripherals('STORAGE')" class="p-filter-btn px-4 py-2 rounded-xl font-extrabold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200">Storage Only</button>
-                </div>
-            </div>
-
-            <!-- Single Card Flip Viewer -->
-            <div class="max-w-2xl mx-auto">
-                <div class="relative perspective-1000 h-[430px] w-full cursor-pointer" onclick="flipPeripheralCard()">
-                    <div id="p-active-card" class="w-full h-full transform-style-3d relative rounded-3xl card-shadow">
-                        <!-- Front Face -->
-                        <div class="absolute inset-0 w-full h-full bg-white border-4 border-indigo-200 rounded-3xl p-8 flex flex-col items-center justify-between backface-hidden text-center">
-                            <span id="p-badge" class="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest bg-amber-100 text-amber-900 border border-amber-300">
-                                INPUT PERIPHERAL
-                            </span>
-                            <div id="p-icon" class="w-32 h-32 bg-indigo-50 rounded-3xl flex items-center justify-center text-7xl text-indigo-600 shadow-inner my-2">
-                                <i class="fa-solid fa-keyboard"></i>
-                            </div>
-                            <div>
-                                <h3 id="p-title" class="text-3xl font-extrabold text-slate-900 mb-1">Keyboard</h3>
-                                <p class="text-indigo-600 text-base font-bold">🔄 Click to flip card and read notes!</p>
-                            </div>
-                            <div class="w-full pt-3 border-t border-slate-100 flex justify-between text-xs text-slate-500 font-bold">
-                                <span>COMPUTER HARDWARE</span>
-                                <span>TAP TO REVEAL DETAILS</span>
-                            </div>
-                        </div>
-
-                        <!-- Back Face -->
-                        <div class="absolute inset-0 w-full h-full bg-slate-900 text-white rounded-3xl p-8 flex flex-col justify-between rotate-y-180 backface-hidden text-left border-4 border-indigo-400">
-                            <div>
-                                <div class="flex justify-between items-start mb-3">
-                                    <h3 id="p-back-title" class="text-2xl font-extrabold text-amber-300">Keyboard</h3>
-                                    <span id="p-back-conn" class="bg-indigo-600 text-white text-xs px-3 py-1 rounded-lg font-bold">USB / Wireless</span>
-                                </div>
-                                <p id="p-back-desc" class="text-slate-200 text-lg mb-4 leading-relaxed">
-                                    Allows users to enter data into a computer and converts the data into a computer-readable form.
-                                </p>
-                                <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 text-base space-y-2">
-                                    <div><strong class="text-amber-400">Class:</strong> <span id="p-back-class" class="text-slate-200">Input Peripheral</span></div>
-                                    <div><strong class="text-cyan-400">Common Connections:</strong> <span id="p-back-ports" class="text-slate-200">USB ports, 2.4 GHz wireless, Bluetooth</span></div>
-                                </div>
-                            </div>
-                            <div class="text-center text-xs text-indigo-300 font-bold">
-                                Click anywhere to flip card back
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Navigation Controls -->
-                <div class="flex items-center justify-between mt-6">
-                    <button onclick="prevPeripheralCard()" class="bg-white hover:bg-slate-100 border-2 border-slate-200 text-slate-800 font-extrabold px-6 py-3 rounded-2xl shadow flex items-center gap-2">
-                        <i class="fa-solid fa-arrow-left"></i> Previous
-                    </button>
-                    <span id="p-counter" class="text-lg font-extrabold text-slate-700">Device 1 of 8</span>
-                    <button onclick="nextPeripheralCard()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-3 rounded-2xl shadow flex items-center gap-2">
-                        Next <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- =================================================================== -->
-        <!-- TAB 3: GUESS THE PERIPHERAL FLASHCARD GAME                           -->
-        <!-- =================================================================== -->
-        <section id="tab-guessing" class="tab-content space-y-8 hidden">
-            <!-- Game Banner -->
-            <div class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-3xl p-8 card-shadow flex flex-col md:flex-row items-center justify-between gap-6">
-                <div>
-                    <span class="bg-white/20 text-white font-extrabold text-xs px-3 py-1.5 rounded-full uppercase tracking-wider backdrop-blur-sm">
-                        🎮 Interactive Challenge
-                    </span>
-                    <h2 class="text-3xl sm:text-4xl font-extrabold mt-2">Guess the Peripheral Detective</h2>
-                    <p class="text-emerald-50 text-lg max-w-xl mt-1">
-                        Read the hints about each hardware device and guess which peripheral it is to earn XP!
-                    </p>
-                </div>
-                <div class="bg-white text-emerald-950 p-4 rounded-2xl text-center shadow-lg min-w-[160px]">
-                    <span class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Winning Streak</span>
-                    <span id="guess-streak" class="text-4xl font-black text-emerald-600">0 🔥</span>
-                </div>
-            </div>
-
-            <!-- Game Card Container -->
-            <div class="bg-white rounded-3xl p-8 border-2 border-emerald-100 card-shadow max-w-3xl mx-auto space-y-6">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                    <span id="guess-round-num" class="text-base font-extrabold text-indigo-700 uppercase tracking-wider">Mystery Device #1</span>
-                    <span id="guess-points-possible" class="bg-amber-100 text-amber-900 font-extrabold text-sm px-4 py-1.5 rounded-full border border-amber-300">
-                        Reward: 300 XP
-                    </span>
-                </div>
-
-                <!-- Progressive Hints -->
-                <div class="space-y-4">
-                    <div id="clue-box-1" class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 flex items-start gap-4">
-                        <div class="w-10 h-10 bg-indigo-100 text-indigo-700 rounded-xl flex items-center justify-center font-black shrink-0 text-xl">1</div>
-                        <div>
-                            <strong class="text-slate-900 font-extrabold block text-lg">Hint #1 (Category):</strong>
-                            <p id="clue-text-1" class="text-slate-700 text-base">This hardware is classified as an INPUT peripheral.</p>
-                        </div>
-                    </div>
-
-                    <div id="clue-box-2" class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 flex items-start gap-4 opacity-40">
-                        <div class="w-10 h-10 bg-indigo-100 text-indigo-700 rounded-xl flex items-center justify-center font-black shrink-0 text-xl">2</div>
-                        <div>
-                            <strong class="text-slate-900 font-extrabold block text-lg">Hint #2 (Function):</strong>
-                            <p id="clue-text-2" class="text-slate-600 text-base">Click "Reveal Next Hint" to unlock this clue (-100 XP penalty).</p>
-                        </div>
-                    </div>
-
-                    <div id="clue-box-3" class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 flex items-start gap-4 opacity-40">
-                        <div class="w-10 h-10 bg-indigo-100 text-indigo-700 rounded-xl flex items-center justify-center font-black shrink-0 text-xl">3</div>
-                        <div>
-                            <strong class="text-slate-900 font-extrabold block text-lg">Hint #3 (Connection):</strong>
-                            <p id="clue-text-3" class="text-slate-600 text-base">Click "Reveal Next Hint" to unlock this clue (-100 XP penalty).</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Unlock Hint Button -->
-                <div class="flex justify-center">
-                    <button id="btn-unlock-clue" onclick="revealNextGuessClue()" class="bg-amber-500 hover:bg-amber-600 text-white font-extrabold px-6 py-3 rounded-2xl text-base shadow transition-all flex items-center gap-2">
-                        <i class="fa-solid fa-lightbulb"></i> Reveal Next Hint
-                    </button>
-                </div>
-
-                <!-- Answer Choice Buttons -->
-                <div class="pt-4 border-t border-slate-100">
-                    <label class="block text-slate-800 font-extrabold text-lg mb-3 text-center">Which peripheral is this mystery item?</label>
-                    <div id="guess-options" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <!-- Options injected dynamically by JS -->
-                    </div>
-                </div>
-
-                <!-- Feedback Box -->
-                <div id="guess-feedback" class="hidden rounded-2xl p-4 text-center font-extrabold text-lg"></div>
-
-                <div class="flex justify-end pt-2">
-                    <button id="btn-next-guess" onclick="loadNextGuessQuestion()" class="hidden bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-3 rounded-2xl shadow">
-                        Next Mystery Peripheral <i class="fa-solid fa-arrow-right ml-1"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- =================================================================== -->
-        <!-- TAB 4: WHAT IS INSIDE A SYSTEM UNIT?                                -->
-        <!-- =================================================================== -->
-        <section id="tab-inside-pc" class="tab-content space-y-8 hidden">
-            <!-- Header Banner -->
-            <div class="bg-white p-6 rounded-3xl border-2 border-indigo-100 card-shadow">
-                <h2 class="text-3xl font-extrabold text-slate-900 flex items-center gap-3">
-                    <i class="fa-solid fa-microchip text-purple-600"></i> Components of a Computer System
-                </h2>
-                <p class="text-slate-700 text-lg mt-1">
-                    A desktop computer consists of the <strong>System Unit</strong> (internal components) and <strong>Peripherals</strong> (external devices).
+                <h2 class="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-4">Master Computer Hardware Types</h2>
+                <p class="text-slate-600 text-lg sm:text-xl mb-8 leading-relaxed max-w-3xl mx-auto font-medium">
+                    Test your ability to classify hardware items into <strong class="text-blue-600">Input</strong>, <strong class="text-purple-600">Processing</strong>, <strong class="text-emerald-600">Output</strong>, and <strong class="text-amber-600">Storage</strong> categories.
+                    Answer each item to test your speed and accuracy!
                 </p>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10 text-left text-base sm:text-lg font-bold">
+                    <div class="p-5 rounded-2xl bg-blue-50 border border-blue-100 text-blue-900 flex flex-col justify-between">
+                        <i class="fa-solid fa-keyboard mb-3 text-3xl text-blue-500"></i>
+                        <span>Input Devices</span>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-purple-50 border border-purple-100 text-purple-900 flex flex-col justify-between">
+                        <i class="fa-solid fa-microchip mb-3 text-3xl text-purple-500"></i>
+                        <span>Processing</span>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-900 flex flex-col justify-between">
+                        <i class="fa-solid fa-desktop mb-3 text-3xl text-emerald-500"></i>
+                        <span>Output Devices</span>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-amber-50 border border-amber-100 text-amber-900 flex flex-col justify-between">
+                        <i class="fa-solid fa-hard-drive mb-3 text-3xl text-amber-500"></i>
+                        <span>Storage Devices</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-5 max-w-xl mx-auto">
+                    <button onclick="startGame()" class="w-full sm:w-auto px-10 py-5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-extrabold rounded-2xl shadow-xl shadow-blue-200 transition-all flex items-center justify-center space-x-3 text-xl">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Start Hardware Quest</span>
+                    </button>
+                    <button onclick="switchTab('flashcards')" class="w-full sm:w-auto px-8 py-5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-2xl transition-all flex items-center justify-center space-x-2 text-xl">
+                        <i class="fa-solid fa-book-reader"></i>
+                        <span>Study Cards First</span>
+                    </button>
+                </div>
             </div>
 
-            <!-- System Unit Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- CPU Card -->
-                <div class="bg-white border-3 border-indigo-200 rounded-3xl p-6 card-shadow space-y-4">
-                    <div class="w-14 h-14 bg-indigo-100 text-indigo-700 rounded-2xl flex items-center justify-center text-3xl font-bold">
-                        <i class="fa-solid fa-brain"></i>
-                    </div>
-                    <h3 class="text-2xl font-extrabold text-indigo-950">Central Processing Unit (CPU)</h3>
-                    <p class="text-slate-700 text-base">Acts as the brain of the computer. Made up of three main parts:</p>
-                    <ul class="space-y-2 text-base text-slate-800">
-                        <li class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <strong class="text-indigo-700">Control Unit (CU):</strong> Fetches and interprets instructions, directs system operations.
-                        </li>
-                        <li class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <strong class="text-indigo-700">Arithmetic & Logic Unit (ALU):</strong> Handles math calculations (+, -, ×, ÷) and logic choices (AND, OR, NOT).
-                        </li>
-                        <li class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                            <strong class="text-indigo-700">Cache Memory:</strong> Fast memory inside CPU storing temporary copies of frequent data.
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Motherboard Card -->
-                <div class="bg-white border-3 border-purple-200 rounded-3xl p-6 card-shadow space-y-4">
-                    <div class="w-14 h-14 bg-purple-100 text-purple-700 rounded-2xl flex items-center justify-center text-3xl font-bold">
-                        <i class="fa-solid fa-circuit-board"></i>
-                    </div>
-                    <h3 class="text-2xl font-extrabold text-purple-950">Motherboard</h3>
-                    <p class="text-slate-700 text-base">The primary circuit board connecting essential components:</p>
-                    <ul class="space-y-2 text-base text-slate-800">
-                        <li class="bg-slate-50 p-3 rounded-xl border border-slate-200">Sockets for CPU & Power Supply</li>
-                        <li class="bg-slate-50 p-3 rounded-xl border border-slate-200">RAM Slots & SSD/Hard Disk Sockets</li>
-                        <li class="bg-slate-50 p-3 rounded-xl border border-slate-200">Sockets for Input/Output Peripherals</li>
-                    </ul>
-                </div>
-
-                <!-- Main Memory Card: RAM vs ROM -->
-                <div class="bg-white border-3 border-blue-200 rounded-3xl p-6 card-shadow space-y-4">
-                    <div class="w-14 h-14 bg-blue-100 text-blue-700 rounded-2xl flex items-center justify-center text-3xl font-bold">
-                        <i class="fa-solid fa-memory"></i>
-                    </div>
-                    <h3 class="text-2xl font-extrabold text-blue-950">Main Memory (Primary Storage)</h3>
-                    <div class="space-y-3">
-                        <div class="bg-blue-50 p-3.5 rounded-2xl border border-blue-200">
-                            <strong class="text-blue-900 block text-lg">RAM (Random Access Memory)</strong>
-                            <p class="text-slate-700 text-sm mt-1">
-                                <strong>Volatile:</strong> Information lost when power turns off. Stores data temporarily for fast processing.
-                            </p>
+            <!-- Active Gameplay View -->
+            <div id="game-active-view" class="hidden space-y-6 w-full">
+                <!-- Status Bar: Progress, Score & Timer -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-wrap items-center justify-between gap-6">
+                    <!-- Score & Streak -->
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-amber-50 border border-amber-200 px-6 py-3 rounded-xl text-amber-900 flex items-center space-x-3">
+                            <i class="fa-solid fa-star text-amber-500 text-3xl"></i>
+                            <div>
+                                <span class="text-xs sm:text-sm uppercase tracking-wider text-amber-700 block font-bold">Score</span>
+                                <span id="game-score-display" class="text-3xl font-black leading-none">0</span>
+                            </div>
                         </div>
-                        <div class="bg-teal-50 p-3.5 rounded-2xl border border-teal-200">
-                            <strong class="text-teal-900 block text-lg">ROM (Read-Only Memory)</strong>
-                            <p class="text-slate-700 text-sm mt-1">
-                                <strong>Non-volatile:</strong> Retains stored info even without power. Stores startup firmware.
-                            </p>
+                        <div class="bg-indigo-50 border border-indigo-200 px-5 py-3 rounded-xl text-indigo-900 flex items-center space-x-3">
+                            <i class="fa-solid fa-bolt text-indigo-500 text-2xl"></i>
+                            <div>
+                                <span class="text-xs sm:text-sm uppercase tracking-wider text-indigo-700 block font-bold">Streak</span>
+                                <span id="game-streak-display" class="text-2xl font-black leading-none">0x</span>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Progress Bar -->
+                    <div class="flex-1 max-w-md mx-auto text-center px-4">
+                        <div class="flex justify-between text-sm sm:text-base font-bold text-slate-700 mb-2">
+                            <span>Item <span id="current-item-num">1</span> of <span id="total-items-num">16</span></span>
+                            <span id="game-progress-percent" class="text-blue-600 font-extrabold">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden border border-slate-200 p-0.5">
+                            <div id="game-progress-bar" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Live Timer -->
+                    <div class="bg-blue-50 border border-blue-200 px-6 py-3 rounded-xl text-blue-900 flex items-center space-x-3 pulse-timer">
+                        <i class="fa-solid fa-stopwatch text-blue-600 text-3xl"></i>
+                        <div>
+                            <span class="text-xs sm:text-sm uppercase tracking-wider text-blue-700 block font-bold">Time Elapsed</span>
+                            <span id="game-timer-display" class="text-3xl font-mono font-black leading-none">00:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Interactive Game Board -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                    
+                    <!-- Hardware Item Card display -->
+                    <div class="lg:col-span-5 flex flex-col justify-between">
+                        <div class="w-full h-full bg-white rounded-3xl border-2 border-slate-200 p-8 shadow-md hover:shadow-lg transition-all text-center flex flex-col items-center justify-between relative overflow-hidden min-h-[460px]" id="active-item-card">
+                            
+                            <div class="w-full flex justify-between items-center text-sm font-bold text-slate-500">
+                                <span class="bg-slate-100 text-slate-700 px-3.5 py-1.5 rounded-full font-extrabold text-xs sm:text-sm" id="card-id-tag">ID: #01</span>
+                                <span class="flex items-center gap-1.5 text-sm sm:text-base text-slate-600"><i class="fa-solid fa-bullseye text-blue-500"></i> Hardware Target</span>
+                            </div>
+
+                            <div class="w-36 h-36 sm:w-40 sm:h-40 my-4 rounded-3xl bg-gradient-to-tr from-slate-50 to-blue-50 border-2 border-slate-200 flex items-center justify-center text-7xl text-blue-600 shadow-inner transition-transform hover:scale-105" id="active-item-icon-container">
+                                <i id="active-item-icon" class="fa-solid fa-keyboard"></i>
+                            </div>
+
+                            <div class="space-y-3">
+                                <h3 id="active-item-name" class="text-3xl sm:text-4xl font-black text-slate-900">Keyboard</h3>
+                                <p id="active-item-description" class="text-slate-700 text-lg sm:text-xl font-medium leading-relaxed max-w-lg mx-auto min-h-[4.5rem] flex items-center justify-center px-2">
+                                    Used to enter letters, numbers, and commands into the computer system by pressing keys.
+                                </p>
+                            </div>
+
+                            <div class="bg-blue-50/80 rounded-2xl p-4 border border-blue-200 text-sm sm:text-base font-semibold text-blue-900 w-full flex items-center justify-center space-x-2 mt-4">
+                                <i class="fa-solid fa-circle-info text-blue-600 text-lg"></i>
+                                <span>Choose the correct Hardware Category on the right</span>
+                            </div>
+                        </div>
+
+                        <!-- Toast Feedback Message Box -->
+                        <div id="game-feedback-toast" class="w-full mt-4 p-4 rounded-2xl border text-base sm:text-lg font-bold flex items-center justify-between opacity-0 transition-all duration-300 transform translate-y-2 pointer-events-none">
+                            <div class="flex items-center space-x-3">
+                                <i id="toast-icon" class="fa-solid fa-check-circle text-2xl"></i>
+                                <span id="toast-message">Correct categorization!</span>
+                            </div>
+                            <span id="toast-points" class="text-sm font-extrabold px-3.5 py-1 rounded-full bg-white/60"></span>
+                        </div>
+                    </div>
+
+                    <!-- Category Choice Buttons (Inputs, Processing, Output, Storage) -->
+                    <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-5 min-h-[460px]">
+                        
+                        <!-- Input Button -->
+                        <button onclick="submitAnswer('Input')" class="group relative bg-white hover:bg-blue-50/80 border-2 border-slate-200 hover:border-blue-500 p-7 rounded-3xl shadow-sm hover:shadow-md transition-all text-left flex flex-col justify-between h-full min-h-[210px] active:scale-[0.98]">
+                            <div class="flex justify-between items-start w-full">
+                                <div class="w-16 h-16 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-3xl font-extrabold group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-right-to-bracket"></i>
+                                </div>
+                                <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-blue-800 bg-blue-100/90 px-3.5 py-1 rounded-full border border-blue-200">Category A</span>
+                            </div>
+                            <div class="mt-4">
+                                <h4 class="text-2xl font-extrabold text-slate-900 group-hover:text-blue-700 mb-1.5">Input Device</h4>
+                                <p class="text-sm sm:text-base text-slate-600 leading-normal font-medium">Sends raw data, audio, video or user actions INTO the computer system.</p>
+                            </div>
+                        </button>
+
+                        <!-- Processing Button -->
+                        <button onclick="submitAnswer('Processing')" class="group relative bg-white hover:bg-purple-50/80 border-2 border-slate-200 hover:border-purple-500 p-7 rounded-3xl shadow-sm hover:shadow-md transition-all text-left flex flex-col justify-between h-full min-h-[210px] active:scale-[0.98]">
+                            <div class="flex justify-between items-start w-full">
+                                <div class="w-16 h-16 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-3xl font-extrabold group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-gear"></i>
+                                </div>
+                                <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-purple-800 bg-purple-100/90 px-3.5 py-1 rounded-full border border-purple-200">Category B</span>
+                            </div>
+                            <div class="mt-4">
+                                <h4 class="text-2xl font-extrabold text-slate-900 group-hover:text-purple-700 mb-1.5">Processing Device</h4>
+                                <p class="text-sm sm:text-base text-slate-600 leading-normal font-medium">Calculates, executes software code, and manages system tasks.</p>
+                            </div>
+                        </button>
+
+                        <!-- Output Button -->
+                        <button onclick="submitAnswer('Output')" class="group relative bg-white hover:bg-emerald-50/80 border-2 border-slate-200 hover:border-emerald-500 p-7 rounded-3xl shadow-sm hover:shadow-md transition-all text-left flex flex-col justify-between h-full min-h-[210px] active:scale-[0.98]">
+                            <div class="flex justify-between items-start w-full">
+                                <div class="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl font-extrabold group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                </div>
+                                <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-100/90 px-3.5 py-1 rounded-full border border-emerald-200">Category C</span>
+                            </div>
+                            <div class="mt-4">
+                                <h4 class="text-2xl font-extrabold text-slate-900 group-hover:text-emerald-700 mb-1.5">Output Device</h4>
+                                <p class="text-sm sm:text-base text-slate-600 leading-normal font-medium">Displays, prints, or presents processed results OUT to the user.</p>
+                            </div>
+                        </button>
+
+                        <!-- Storage Button -->
+                        <button onclick="submitAnswer('Storage')" class="group relative bg-white hover:bg-amber-50/80 border-2 border-slate-200 hover:border-amber-500 p-7 rounded-3xl shadow-sm hover:shadow-md transition-all text-left flex flex-col justify-between h-full min-h-[210px] active:scale-[0.98]">
+                            <div class="flex justify-between items-start w-full">
+                                <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-3xl font-extrabold group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-box-archive"></i>
+                                </div>
+                                <span class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-amber-800 bg-amber-100/90 px-3.5 py-1 rounded-full border border-amber-200">Category D</span>
+                            </div>
+                            <div class="mt-4">
+                                <h4 class="text-2xl font-extrabold text-slate-900 group-hover:text-amber-700 mb-1.5">Storage Device</h4>
+                                <p class="text-sm sm:text-base text-slate-600 leading-normal font-medium">Saves programs, files, and user data permanently or temporarily.</p>
+                            </div>
+                        </button>
+
+                    </div>
+                </div>
+
+                <!-- Recent Activity / Answer Log -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+                    <h4 class="text-sm font-extrabold uppercase tracking-wider text-slate-600 mb-3 flex items-center space-x-2">
+                        <i class="fa-solid fa-list-check text-blue-500"></i>
+                        <span>Quest Progress History</span>
+                    </h4>
+                    <div id="game-history-log" class="flex space-x-3 overflow-x-auto pb-2 min-h-[3.5rem] items-center text-sm">
+                        <span class="text-sm text-slate-400 italic">Answer items to see your progress history here...</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Clean Vocabulary Reference -->
-            <div class="bg-indigo-50/70 border-2 border-indigo-200 rounded-3xl p-6 space-y-4">
-                <h3 class="text-2xl font-extrabold text-indigo-950 flex items-center gap-2">
-                    <i class="fa-solid fa-book text-indigo-600"></i> Core Hardware Vocabulary List
-                </h3>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-center">
-                    <div class="bg-white p-3 rounded-2xl border border-indigo-100 font-extrabold text-indigo-900 text-sm shadow-sm">Motherboard</div>
-                    <div class="bg-white p-3 rounded-2xl border border-indigo-100 font-extrabold text-indigo-900 text-sm shadow-sm">Peripherals</div>
-                    <div class="bg-white p-3 rounded-2xl border border-indigo-100 font-extrabold text-indigo-900 text-sm shadow-sm">System Bus</div>
-                    <div class="bg-white p-3 rounded-2xl border border-indigo-100 font-extrabold text-indigo-900 text-sm shadow-sm">CPU</div>
-                    <div class="bg-white p-3 rounded-2xl border border-indigo-100 font-extrabold text-indigo-900 text-sm shadow-sm">RAM (Volatile)</div>
-                    <div class="bg-white p-3 rounded-2xl border border-indigo-100 font-extrabold text-indigo-900 text-sm shadow-sm">ROM (Non-volatile)</div>
-                    <div class="bg-white p-3 rounded-2xl border border-indigo-100 font-extrabold text-indigo-900 text-sm shadow-sm">Control Unit (CU)</div>
-                    <div class="bg-white p-3 rounded-2xl border border-indigo-100 font-extrabold text-indigo-900 text-sm shadow-sm">ALU</div>
-                    <div class="bg-white p-3 rounded-2xl border border-indigo-100 font-extrabold text-indigo-900 text-sm shadow-sm">Cache Memory</div>
-                    <div class="bg-white p-3 rounded-2xl border border-indigo-100 font-extrabold text-indigo-900 text-sm shadow-sm">Data Bus</div>
+            <!-- Game Summary Results Screen -->
+            <div id="game-summary-view" class="hidden bg-white rounded-3xl border border-slate-200 p-8 sm:p-12 shadow-md max-w-4xl mx-auto space-y-8 w-full">
+                <div class="text-center">
+                    <div class="inline-flex p-6 rounded-full bg-emerald-50 text-emerald-600 mb-4 ring-8 ring-emerald-50/50">
+                        <i class="fa-solid fa-trophy text-6xl"></i>
+                    </div>
+                    <h2 class="text-4xl sm:text-5xl font-extrabold text-slate-900">Quest Completed!</h2>
+                    <p class="text-slate-600 text-lg mt-2 font-medium">Great job classifying computer hardware components!</p>
+                </div>
+
+                <!-- Key Metrics Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-5 text-center">
+                    <div class="p-6 rounded-2xl bg-amber-50 border border-amber-200">
+                        <div class="text-xs sm:text-sm font-extrabold text-amber-700 uppercase tracking-wider mb-1">Final Score</div>
+                        <div id="summary-score" class="text-4xl sm:text-5xl font-black text-amber-900">0</div>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-blue-50 border border-blue-200">
+                        <div class="text-xs sm:text-sm font-extrabold text-blue-700 uppercase tracking-wider mb-1">Total Time</div>
+                        <div id="summary-time" class="text-4xl sm:text-5xl font-black text-blue-900 font-mono">00:00</div>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-emerald-50 border border-emerald-200">
+                        <div class="text-xs sm:text-sm font-extrabold text-emerald-700 uppercase tracking-wider mb-1">Accuracy</div>
+                        <div id="summary-accuracy" class="text-4xl sm:text-5xl font-black text-emerald-900">0%</div>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-indigo-50 border border-indigo-200">
+                        <div class="text-xs sm:text-sm font-extrabold text-indigo-700 uppercase tracking-wider mb-1">Max Streak</div>
+                        <div id="summary-streak" class="text-4xl sm:text-5xl font-black text-indigo-900">0</div>
+                    </div>
+                </div>
+
+                <!-- Detailed Breakdown Table -->
+                <div class="space-y-4">
+                    <h3 class="font-extrabold text-slate-900 text-base uppercase tracking-wider flex items-center justify-between">
+                        <span>Hardware Results Review</span>
+                        <span id="summary-count-badge" class="text-sm font-semibold text-slate-700 bg-slate-100 px-3.5 py-1 rounded-full border border-slate-200">16 items</span>
+                    </h3>
+                    <div class="max-h-80 overflow-y-auto rounded-2xl border border-slate-200 divide-y divide-slate-100">
+                        <div id="summary-breakdown-list" class="divide-y divide-slate-100 text-base">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row justify-center gap-4 pt-2">
+                    <button onclick="startGame()" class="px-10 py-5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-extrabold rounded-2xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center space-x-2 text-lg">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Play Again</span>
+                    </button>
+                    <button onclick="switchTab('flashcards')" class="px-8 py-5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-2xl transition-all flex items-center justify-center space-x-2 text-lg">
+                        <i class="fa-solid fa-layer-group"></i>
+                        <span>Review Flashcards</span>
+                    </button>
                 </div>
             </div>
+
         </section>
 
-        <!-- =================================================================== -->
-        <!-- TAB 5: MASTERY QUIZ                                                -->
-        <!-- =================================================================== -->
-        <section id="tab-quiz" class="tab-content space-y-8 hidden">
-            <!-- Start Screen -->
-            <div id="quiz-start-screen" class="bg-white rounded-3xl p-8 border-2 border-indigo-100 card-shadow text-center max-w-2xl mx-auto space-y-6">
-                <div class="w-24 h-24 bg-amber-100 text-amber-600 rounded-3xl flex items-center justify-center text-5xl mx-auto shadow-inner">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
+        <!-- SECTION 2: STUDY FLASHCARDS -->
+        <section id="section-flashcards" class="hidden space-y-6 w-full">
+
+            <!-- Flashcard Header & Filter Controls -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-3xl font-extrabold text-slate-900">Computer Concepts Mastery Quiz</h2>
-                    <p class="text-slate-600 text-lg mt-2">Test your understanding of the IPO Cycle, Peripherals, and System Unit components!</p>
-                </div>
-                <div class="bg-amber-50 rounded-2xl p-4 text-left border border-amber-200 space-y-2 text-base text-amber-950">
-                    <div class="flex items-center gap-2 font-extrabold">
-                        <i class="fa-solid fa-check-circle text-amber-600"></i> 10 Questions based strictly on lesson notes
-                    </div>
-                    <div class="flex items-center gap-2 font-extrabold">
-                        <i class="fa-solid fa-check-circle text-amber-600"></i> Instant feedback and explanations for every answer
-                    </div>
-                </div>
-                <button onclick="startQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-xl px-8 py-4 rounded-2xl shadow-lg transition-transform hover:scale-105 inline-flex items-center gap-3">
-                    <i class="fa-solid fa-play"></i> Start Quiz Challenge!
-                </button>
-            </div>
-
-            <!-- Active Quiz Container -->
-            <div id="quiz-active-screen" class="hidden bg-white rounded-3xl p-8 border-2 border-indigo-100 card-shadow max-w-3xl mx-auto space-y-6">
-                <!-- Progress Header -->
-                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                    <span id="quiz-progress-text" class="text-base font-extrabold text-indigo-700">Question 1 of 10</span>
-                    <div class="w-48 bg-slate-100 rounded-full h-3">
-                        <div id="quiz-progress-bar" class="bg-indigo-600 h-3 rounded-full transition-all duration-300" style="width: 10%;"></div>
-                    </div>
+                    <h2 class="text-3xl font-extrabold text-slate-900">Hardware Flashcards</h2>
+                    <p class="text-sm sm:text-base text-slate-600 font-medium mt-1">Click or tap any card to flip it and explore definitions & fun facts.</p>
                 </div>
 
-                <!-- Question Title -->
-                <h3 id="quiz-question-title" class="text-2xl font-extrabold text-slate-900 leading-snug">
-                    Which three core stages form a computer's functional cycle?
-                </h3>
-
-                <!-- Dynamic Options -->
-                <div id="quiz-options-grid" class="space-y-3"></div>
-
-                <!-- Explanation Box -->
-                <div id="quiz-explanation" class="hidden p-4 rounded-2xl text-base font-bold"></div>
-
-                <div class="flex justify-end pt-2">
-                    <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="hidden bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-3 rounded-2xl shadow">
-                        Next Question <i class="fa-solid fa-arrow-right ml-1"></i>
-                    </button>
+                <!-- Category Filters -->
+                <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+                    <button onclick="filterFlashcards('All')" class="fc-filter-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-blue-600 text-white shadow-sm" data-cat="All">All Hardware</button>
+                    <button onclick="filterFlashcards('Input')" class="fc-filter-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200" data-cat="Input">📥 Input</button>
+                    <button onclick="filterFlashcards('Processing')" class="fc-filter-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200" data-cat="Processing">⚙️ Processing</button>
+                    <button onclick="filterFlashcards('Output')" class="fc-filter-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200" data-cat="Output">📤 Output</button>
+                    <button onclick="filterFlashcards('Storage')" class="fc-filter-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200" data-cat="Storage">💾 Storage</button>
                 </div>
             </div>
 
-            <!-- Quiz Results Screen -->
-            <div id="quiz-results-screen" class="hidden bg-white rounded-3xl p-8 border-2 border-indigo-100 card-shadow text-center max-w-2xl mx-auto space-y-6">
-                <div class="w-24 h-24 bg-indigo-100 text-indigo-600 rounded-3xl flex items-center justify-center text-5xl mx-auto shadow-inner">
-                    <i class="fa-solid fa-award"></i>
-                </div>
-                <div>
-                    <h2 class="text-4xl font-extrabold text-slate-900">Quiz Completed!</h2>
-                    <p class="text-slate-600 text-lg mt-1">Here is your performance summary:</p>
-                </div>
+            <!-- Flashcard Grid Display -->
+            <div id="flashcards-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6 w-full">
+                <!-- Dynamically generated flashcards -->
+            </div>
 
-                <div class="bg-indigo-50 rounded-3xl p-6 border-2 border-indigo-200 inline-block w-full">
-                    <span class="block text-sm font-bold text-indigo-600 uppercase">Final Score</span>
-                    <span id="quiz-final-score" class="text-6xl font-black text-indigo-950">90%</span>
-                    <p id="quiz-final-feedback" class="text-indigo-900 font-extrabold text-lg mt-2">Excellent job! You are a Computer Concepts Master!</p>
-                </div>
+        </section>
 
-                <div class="flex flex-wrap justify-center gap-4">
-                    <button onclick="startQuiz()" class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold px-6 py-3 rounded-2xl">
-                        <i class="fa-solid fa-rotate-right"></i> Retake Quiz
-                    </button>
-                    <button onclick="switchTab('ipo')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-6 py-3 rounded-2xl shadow">
-                        Back to Home
-                    </button>
+        <!-- SECTION 3: EXPANDED COMPREHENSIVE QUICK REFERENCE GUIDE -->
+        <section id="section-reference" class="hidden space-y-8 w-full">
+            
+            <!-- Hero Header -->
+            <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-8 sm:p-12 shadow-lg relative overflow-hidden">
+                <div class="absolute right-0 top-0 translate-x-12 -translate-y-12 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="max-w-4xl space-y-4 relative z-10">
+                    <span class="inline-flex items-center space-x-2 text-sm font-extrabold uppercase tracking-widest bg-blue-500/20 text-blue-300 border border-blue-400/30 px-4 py-1.5 rounded-full">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                        <span>Computer Architecture Handbook</span>
+                    </span>
+                    <h2 class="text-4xl sm:text-5xl font-black text-white tracking-tight">The IPOS Information Processing Model</h2>
+                    <p class="text-slate-200 text-base sm:text-xl leading-relaxed font-medium">
+                        Every computer system, from smartphones and laptops to supercomputers, operates on the fundamental 
+                        <strong class="text-blue-400 font-bold">IPOS Cycle (Input, Processing, Output, Storage)</strong>. Understanding how data transforms from raw user input into processed information is key to computer science.
+                    </p>
                 </div>
             </div>
+
+            <!-- Deep-Dive Category Breakdown Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                <!-- 1. INPUT CATEGORY DETAILED -->
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 space-y-6 flex flex-col justify-between">
+                    <div class="space-y-5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-2xl font-extrabold shadow-md shadow-blue-200">
+                                    <i class="fa-solid fa-right-to-bracket"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-black text-slate-900">1. Input Hardware</h3>
+                                    <span class="text-xs sm:text-sm font-extrabold text-blue-600 uppercase tracking-wider">Entry & Control Devices</span>
+                                </div>
+                            </div>
+                            <span class="px-3.5 py-1.5 bg-blue-100 text-blue-800 border border-blue-200 text-xs sm:text-sm font-extrabold rounded-full">Direction: IN</span>
+                        </div>
+
+                        <p class="text-slate-700 text-base sm:text-lg leading-relaxed font-medium">
+                            Input devices act as the bridge between human physical actions and digital computational environments. They convert mechanical movement, light, soundwaves, or touch pressure into binary signals.
+                        </p>
+
+                        <div class="space-y-3">
+                            <h4 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-500">Key Input Hardware Devices</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm sm:text-base font-semibold">
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-keyboard text-blue-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">Keyboard</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Text and command entry</span>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-computer-mouse text-blue-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">Mouse & Trackpad</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">2D spatial pointing</span>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-microphone text-blue-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">Microphone</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Audio wave capturing</span>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-video text-blue-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">Webcam & Scanner</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Visual image digitized</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50/80 p-4 rounded-2xl border border-blue-200 text-sm sm:text-base text-blue-900 space-y-1">
+                        <strong class="font-bold flex items-center gap-2 text-blue-950 text-base">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i> Key Technical Characteristic:
+                        </strong>
+                        <p class="text-slate-700 font-medium">Input devices never modify or display results; they strictly transmit data unidirectionally into system memory.</p>
+                    </div>
+                </div>
+
+                <!-- 2. PROCESSING CATEGORY DETAILED -->
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 space-y-6 flex flex-col justify-between">
+                    <div class="space-y-5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-14 h-14 rounded-2xl bg-purple-600 text-white flex items-center justify-center text-2xl font-extrabold shadow-md shadow-purple-200">
+                                    <i class="fa-solid fa-gear"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-black text-slate-900">2. Processing Hardware</h3>
+                                    <span class="text-xs sm:text-sm font-extrabold text-purple-600 uppercase tracking-wider">Computation Engine</span>
+                                </div>
+                            </div>
+                            <span class="px-3.5 py-1.5 bg-purple-100 text-purple-800 border border-purple-200 text-xs sm:text-sm font-extrabold rounded-full">Direction: EXECUTE</span>
+                        </div>
+
+                        <p class="text-slate-700 text-base sm:text-lg leading-relaxed font-medium">
+                            Processing hardware serves as the computational powerhouse. It fetches code from memory, decodes instructions, and executes arithmetic calculations and logic routines.
+                        </p>
+
+                        <div class="space-y-3">
+                            <h4 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-500">Key Processing Hardware Components</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm sm:text-base font-semibold">
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-microchip text-purple-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">CPU (Central Processor)</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Primary computer 'brain'</span>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-memory text-purple-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">GPU (Graphics Card)</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Parallel 3D rendering</span>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-server text-purple-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">RAM (Primary Memory)</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Ultra-fast working RAM</span>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-network-wired text-purple-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">Motherboard</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Main circuit backbone</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-50/80 p-4 rounded-2xl border border-purple-200 text-sm sm:text-base text-purple-900 space-y-1">
+                        <strong class="font-bold flex items-center gap-2 text-purple-950 text-base">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i> Key Technical Characteristic:
+                        </strong>
+                        <p class="text-slate-700 font-medium">CPU performance is measured in Gigahertz (GHz, billions of clock cycles per second) and instruction throughput.</p>
+                    </div>
+                </div>
+
+                <!-- 3. OUTPUT CATEGORY DETAILED -->
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 space-y-6 flex flex-col justify-between">
+                    <div class="space-y-5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-14 h-14 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl font-extrabold shadow-md shadow-emerald-200">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-black text-slate-900">3. Output Hardware</h3>
+                                    <span class="text-xs sm:text-sm font-extrabold text-emerald-600 uppercase tracking-wider">Presentation & Media</span>
+                                </div>
+                            </div>
+                            <span class="px-3.5 py-1.5 bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs sm:text-sm font-extrabold rounded-full">Direction: OUT</span>
+                        </div>
+
+                        <p class="text-slate-700 text-base sm:text-lg leading-relaxed font-medium">
+                            Output hardware takes processed digital binary information from memory and translates it into sensory formats that human beings can see, hear, or feel.
+                        </p>
+
+                        <div class="space-y-3">
+                            <h4 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-500">Key Output Hardware Devices</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm sm:text-base font-semibold">
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-desktop text-emerald-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">Monitor / Display</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Pixel visual display</span>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-print text-emerald-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">Printer & Plotter</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Hard copy paper prints</span>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-volume-high text-emerald-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">Speakers</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Acoustic audio wave output</span>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-headphones text-emerald-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">Headphones</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Personal audio sound</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-200 text-sm sm:text-base text-emerald-900 space-y-1">
+                        <strong class="font-bold flex items-center gap-2 text-emerald-950 text-base">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i> Key Technical Characteristic:
+                        </strong>
+                        <p class="text-slate-700 font-medium">Output devices are non-interactive receivers of system data; they deliver information out without modifying internal files.</p>
+                    </div>
+                </div>
+
+                <!-- 4. STORAGE CATEGORY DETAILED -->
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 space-y-6 flex flex-col justify-between">
+                    <div class="space-y-5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-14 h-14 rounded-2xl bg-amber-600 text-white flex items-center justify-center text-2xl font-extrabold shadow-md shadow-amber-200">
+                                    <i class="fa-solid fa-box-archive"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-2xl font-black text-slate-900">4. Storage Hardware</h3>
+                                    <span class="text-xs sm:text-sm font-extrabold text-amber-600 uppercase tracking-wider">Secondary Storage</span>
+                                </div>
+                            </div>
+                            <span class="px-3.5 py-1.5 bg-amber-100 text-amber-800 border border-amber-200 text-xs sm:text-sm font-extrabold rounded-full">Direction: SAVE / READ</span>
+                        </div>
+
+                        <p class="text-slate-700 text-base sm:text-lg leading-relaxed font-medium">
+                            Storage devices hold persistent data non-volatilesly. Unlike RAM memory, secondary storage safely retains files, games, operating systems, and programs even when power is turned off.
+                        </p>
+
+                        <div class="space-y-3">
+                            <h4 class="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-500">Key Secondary Storage Devices</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm sm:text-base font-semibold">
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-hard-drive text-amber-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">SSD (Solid State Drive)</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">High-speed flash memory</span>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-database text-amber-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">HDD (Hard Disk Drive)</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Magnetic spinning disk</span>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-usb text-amber-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">USB Flash Drive</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Portable flash drive</span>
+                                    </div>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-center space-x-3">
+                                    <i class="fa-solid fa-sd-card text-amber-600 text-xl"></i>
+                                    <div>
+                                        <strong class="block text-slate-900 text-base">SD / MicroSD Card</strong>
+                                        <span class="text-slate-500 text-xs sm:text-sm font-normal">Camera & phone memory</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50/80 p-4 rounded-2xl border border-amber-200 text-sm sm:text-base text-amber-900 space-y-1">
+                        <strong class="font-bold flex items-center gap-2 text-amber-950 text-base">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i> Key Technical Characteristic:
+                        </strong>
+                        <p class="text-slate-700 font-medium">Non-volatile memory retains data with zero power supply. Measured in Gigabytes (GB) and Terabytes (TB).</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Specialized Knowledge: Dual-Function Hybrid (I/O) Devices -->
+            <div class="bg-white rounded-3xl border border-slate-200 p-8 sm:p-10 shadow-sm space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-5">
+                    <div>
+                        <h3 class="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-3">
+                            <i class="fa-solid fa-sliders text-indigo-600"></i>
+                            <span>Special Case: Hybrid Input/Output (I/O) Hardware</span>
+                        </h3>
+                        <p class="text-sm sm:text-base text-slate-600 font-medium mt-1">Some modern devices perform BOTH input and output functions simultaneously.</p>
+                    </div>
+                    <span class="text-xs sm:text-sm font-bold bg-indigo-50 text-indigo-800 border border-indigo-200 px-4 py-1.5 rounded-full self-start">Advanced Concepts</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm sm:text-base">
+                    <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+                        <strong class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-mobile-screen text-indigo-600 text-xl"></i> Touchscreen Display
+                        </strong>
+                        <p class="text-slate-700 leading-relaxed font-medium">
+                            <strong class="text-blue-600 font-bold">Input:</strong> Touch sensors detect finger taps and gestures.<br>
+                            <strong class="text-emerald-600 font-bold">Output:</strong> Screen displays pixels, graphics, and video.
+                        </p>
+                    </div>
+
+                    <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+                        <strong class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-vr-cardboard text-indigo-600 text-xl"></i> VR Headset (Virtual Reality)
+                        </strong>
+                        <p class="text-slate-700 leading-relaxed font-medium">
+                            <strong class="text-blue-600 font-bold">Input:</strong> Head tracking motion sensors, gyroscopes & microphones.<br>
+                            <strong class="text-emerald-600 font-bold">Output:</strong> 3D visual displays and spatial audio speakers.
+                        </p>
+                    </div>
+
+                    <div class="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+                        <strong class="font-bold text-slate-900 text-lg flex items-center gap-2">
+                            <i class="fa-solid fa-headset text-indigo-600 text-xl"></i> Headset with Microphone
+                        </strong>
+                        <p class="text-slate-700 leading-relaxed font-medium">
+                            <strong class="text-blue-600 font-bold">Input:</strong> Built-in microphone captures your voice audio.<br>
+                            <strong class="text-emerald-600 font-bold">Output:</strong> Headphone speakers play game and voice chat sound.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
         </section>
 
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
-        <div class="max-w-7xl mx-auto px-4 text-center text-slate-600 text-base font-bold space-y-1">
-            <p>Computer Concepts & Peripherals Explorer • Interactive Student Literacy Module</p>
-            <p class="text-xs text-slate-400">Light theme UI, accessible design, built with Web Audio & Tailwind CSS</p>
+    <footer class="bg-white border-t border-slate-200 py-5 mt-auto w-full">
+        <div class="max-w-[1700px] mx-auto px-4 sm:px-8 text-center text-sm font-medium text-slate-600 flex flex-col sm:flex-row items-center justify-between gap-2">
+            <span>Computer Hardware IPO Educational Resource</span>
+            <span class="text-slate-500">Designed for interactive student learning & active practice</span>
         </div>
     </footer>
 
     <script>
-        /* ==========================================================================
-           AUDIO SYNTHESIZER ENGINE (Web Audio API - Synthesizes tones cleanly)
-           ========================================================================== */
-        let audioEnabled = true;
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        let audioCtx = null;
-
-        function triggerConfetti(options) {
-            if (typeof confetti === 'function') {
-                try {
-                    confetti(options);
-                    return;
-                } catch (e) {
-                    console.warn('Canvas confetti call failed:', e);
-                }
+        const HARDWARE_ITEMS = [
+            {
+                id: "hw-1",
+                name: "Keyboard",
+                category: "Input",
+                icon: "fa-keyboard",
+                description: "Used to enter text, numbers, and key shortcuts directly into the computer.",
+                funFact: "QWERTY keyboard layout was originally invented for mechanical typewriters in 1872!"
+            },
+            {
+                id: "hw-2",
+                name: "Mouse",
+                category: "Input",
+                icon: "fa-computer-mouse",
+                description: "Handheld pointing device used to move the cursor, click buttons, and drag elements.",
+                funFact: "The very first computer mouse in 1964 was made of wood!"
+            },
+            {
+                id: "hw-3",
+                name: "Scanner",
+                category: "Input",
+                icon: "fa-print",
+                description: "Captures physical documents or photos and converts them into digital images.",
+                funFact: "Scanners use optical sensors (CCD) to measure reflected light from paper."
+            },
+            {
+                id: "hw-4",
+                name: "Microphone",
+                category: "Input",
+                icon: "fa-microphone",
+                description: "Converts voice and sound vibrations into digital audio signals for recording.",
+                funFact: "Microphones work using diaphragms that vibrate when sound waves hit them."
+            },
+            {
+                id: "hw-5",
+                name: "Webcam",
+                category: "Input",
+                icon: "fa-video",
+                description: "Captures live video feed for video calls, streaming, and photo taking.",
+                funFact: "The first webcam was created at Cambridge to monitor a coffee pot's status!"
+            },
+            {
+                id: "hw-6",
+                name: "Central Processing Unit (CPU)",
+                category: "Processing",
+                icon: "fa-microchip",
+                description: "The 'brain' of the computer that carries out instructions and executes software commands.",
+                funFact: "Modern CPUs can perform billions of calculations every single second!"
+            },
+            {
+                id: "hw-7",
+                name: "Graphics Card (GPU)",
+                category: "Processing",
+                icon: "fa-memory",
+                description: "Processes complex math to render images, 3D graphics, and video on your screen.",
+                funFact: "GPUs contain thousands of small cores designed for parallel computing tasks."
+            },
+            {
+                id: "hw-8",
+                name: "Random Access Memory (RAM)",
+                category: "Processing",
+                icon: "fa-server",
+                description: "High-speed temporary memory used by the CPU to hold active running programs.",
+                funFact: "RAM is volatile memory — all data inside disappears when power is turned off."
+            },
+            {
+                id: "hw-9",
+                name: "Motherboard",
+                category: "Processing",
+                icon: "fa-network-wired",
+                description: "The main circuit board that connects all hardware components together.",
+                funFact: "It distributes electricity and allows communication between CPU, RAM, and storage."
+            },
+            {
+                id: "hw-10",
+                name: "Monitor / Screen",
+                category: "Output",
+                icon: "fa-desktop",
+                description: "Displays visual information, graphics, text, and user interface on a glass screen.",
+                funFact: "Modern monitors use millions of tiny RGB pixels (Red, Green, Blue) to show full colors."
+            },
+            {
+                id: "hw-11",
+                name: "Printer",
+                category: "Output",
+                icon: "fa-print",
+                description: "Produces physical hard copies of digital documents and photos onto paper.",
+                funFact: "3D printers are a type of output device that prints physical objects!"
+            },
+            {
+                id: "hw-12",
+                name: "Speakers",
+                category: "Output",
+                icon: "fa-volume-high",
+                description: "Converts digital audio signals into audible sound waves for music and alerts.",
+                funFact: "Speakers use electromagnetic coils to vibrate a cone back and forth rapidly."
+            },
+            {
+                id: "hw-13",
+                name: "Headphones",
+                category: "Output",
+                icon: "fa-headphones",
+                description: "Personal audio output worn on ears to listen to sound without disturbing others.",
+                funFact: "Early military headphones in the 1910s weighed over 2 pounds!"
+            },
+            {
+                id: "hw-14",
+                name: "Solid State Drive (SSD)",
+                category: "Storage",
+                icon: "fa-hard-drive",
+                description: "Ultra-fast permanent storage with no moving parts using flash memory chips.",
+                funFact: "SSDs are up to 10x faster at reading data compared to traditional hard drives!"
+            },
+            {
+                id: "hw-15",
+                name: "Hard Disk Drive (HDD)",
+                category: "Storage",
+                icon: "fa-database",
+                description: "Magnetic secondary storage device with spinning magnetic platters.",
+                funFact: "HDD platters spin at speeds up to 7,200 revolutions per minute (RPM)!"
+            },
+            {
+                id: "hw-16",
+                name: "USB Flash Drive",
+                category: "Storage",
+                icon: "fa-usb",
+                description: "Compact, highly portable plug-and-play storage drive for sharing files.",
+                funFact: "First commercial USB thumb drives in year 2000 had only 8 Megabytes of storage!"
             }
-            createSimpleConfetti();
-        }
+        ];
 
-        function createSimpleConfetti() {
-            const colors = ['#6366F1', '#10B981', '#F59E0B', '#EC4899', '#3B82F6'];
-            for (let i = 0; i < 25; i++) {
-                const p = document.createElement('div');
-                p.style.position = 'fixed';
-                p.style.left = (Math.random() * 80 + 10) + 'vw';
-                p.style.top = '70vh';
-                p.style.width = (Math.random() * 8 + 6) + 'px';
-                p.style.height = (Math.random() * 8 + 6) + 'px';
-                p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                p.style.borderRadius = '50%';
-                p.style.zIndex = '9999';
-                p.style.pointerEvents = 'none';
-                p.style.transition = 'all 1s cubic-bezier(0.25, 1, 0.5, 1)';
-                document.body.appendChild(p);
+        let currentGameItems = [];
+        let currentItemIndex = 0;
+        let score = 0;
+        let streak = 0;
+        let maxStreak = 0;
+        let correctCount = 0;
+        let timerInterval = null;
+        let secondsElapsed = 0;
+        let userResponses = [];
 
-                setTimeout(() => {
-                    p.style.transform = `translate(${(Math.random() - 0.5) * 200}px, -${Math.random() * 250 + 100}px) scale(0)`;
-                    p.style.opacity = '0';
-                }, 20);
-
-                setTimeout(() => {
-                    if (p && p.parentNode) p.parentNode.removeChild(p);
-                }, 1100);
-            }
-        }
-
-        function getAudioContext() {
-            if (!audioCtx) {
-                audioCtx = new AudioCtx();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            return audioCtx;
-        }
-
-        function toggleAudio() {
-            audioEnabled = !audioEnabled;
-            const icon = document.getElementById('soundIcon');
-            if (audioEnabled) {
-                icon.className = "fa-solid fa-volume-high text-xl text-indigo-600";
-                playSound('click');
-            } else {
-                icon.className = "fa-solid fa-volume-xmark text-xl text-slate-400";
-            }
-        }
+        /* Audio synthesizer for sound effects */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         function playSound(type) {
-            if (!audioEnabled) return;
             try {
-                const ctx = getAudioContext();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
                 osc.connect(gain);
-                gain.connect(ctx.destination);
+                gain.connect(audioCtx.destination);
 
-                const now = ctx.currentTime;
-
-                if (type === 'click') {
+                if (type === 'correct') {
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(450, now);
-                    osc.frequency.exponentialRampToValueAtTime(750, now + 0.05);
-                    gain.gain.setValueAtTime(0.12, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
-                    osc.start(now);
-                    osc.stop(now + 0.05);
-                } else if (type === 'correct') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, now);
-                    osc.frequency.setValueAtTime(659.25, now + 0.08);
-                    osc.frequency.setValueAtTime(783.99, now + 0.16);
-                    gain.gain.setValueAtTime(0.18, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                    osc.start(now);
-                    osc.stop(now + 0.3);
-                } else if (type === 'wrong') {
+                    osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+                    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.1); // A5
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'incorrect') {
                     osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(220, now);
-                    osc.frequency.setValueAtTime(160, now + 0.1);
-                    gain.gain.setValueAtTime(0.18, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-                    osc.start(now);
-                    osc.stop(now + 0.25);
-                } else if (type === 'flip') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(320, now);
-                    osc.frequency.exponentialRampToValueAtTime(180, now + 0.08);
-                    gain.gain.setValueAtTime(0.1, now);
-                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
-                    osc.start(now);
-                    osc.stop(now + 0.08);
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
+                    osc.frequency.setValueAtTime(164.81, audioCtx.currentTime + 0.15); // E3
+                    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.35);
+                } else if (type === 'complete') {
+                    // Win chord
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                        const subOsc = audioCtx.createOscillator();
+                        const subGain = audioCtx.createGain();
+                        subOsc.connect(subGain);
+                        subGain.connect(audioCtx.destination);
+                        subOsc.frequency.value = freq;
+                        subGain.gain.setValueAtTime(0.1, audioCtx.currentTime + idx * 0.08);
+                        subGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6 + idx * 0.08);
+                        subOsc.start(audioCtx.currentTime + idx * 0.08);
+                        subOsc.stop(audioCtx.currentTime + 0.6 + idx * 0.08);
+                    });
                 }
             } catch (e) {
-                // Silently handle audio context restrictions
+                // Audio context fallback if blocked
             }
         }
 
-        /* ==========================================================================
-           GLOBAL XP TRACKER
-           ========================================================================== */
-        let globalXP = 0;
+        function switchTab(tabName) {
+            // Hide all sections
+            document.getElementById('section-game').classList.add('hidden');
+            document.getElementById('section-flashcards').classList.add('hidden');
+            document.getElementById('section-reference').classList.add('hidden');
 
-        function addXP(amount) {
-            globalXP += amount;
-            document.getElementById('globalXP').innerText = globalXP + ' XP';
-        }
+            // Reset tab button highlights
+            const gameTabBtn = document.getElementById('nav-tab-game');
+            const flashcardsTabBtn = document.getElementById('nav-tab-flashcards');
+            const referenceTabBtn = document.getElementById('nav-tab-reference');
 
-        /* ==========================================================================
-           NAVIGATION & TAB SWITCHING
-           ========================================================================== */
-        function switchTab(tabId) {
-            playSound('click');
-            
-            // Hide all tab content sections
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+            const inactiveClass = 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50';
+            const activeClass = 'bg-white text-blue-600 shadow-sm';
 
-            // Show selected tab
-            const selectedTab = document.getElementById('tab-' + tabId);
-            if (selectedTab) {
-                selectedTab.classList.remove('hidden');
-            }
-
-            // Update Header Nav button styles
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = "nav-btn px-4 py-2.5 rounded-2xl text-base font-bold transition-all text-slate-700 hover:bg-slate-100 flex items-center gap-2";
+            [gameTabBtn, flashcardsTabBtn, referenceTabBtn].forEach(btn => {
+                if (btn) {
+                    btn.className = `flex items-center space-x-2 px-3 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${inactiveClass}`;
+                }
             });
 
-            const activeBtn = document.getElementById('nav-' + tabId);
-            if (activeBtn) {
-                activeBtn.className = "nav-btn px-4 py-2.5 rounded-2xl text-base font-bold transition-all text-indigo-700 bg-indigo-50 border border-indigo-200 shadow-sm flex items-center gap-2";
+            if (tabName === 'game') {
+                document.getElementById('section-game').classList.remove('hidden');
+                gameTabBtn.className = `flex items-center space-x-2 px-3 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${activeClass}`;
+            } else if (tabName === 'flashcards') {
+                document.getElementById('section-flashcards').classList.remove('hidden');
+                flashcardsTabBtn.className = `flex items-center space-x-2 px-3 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${activeClass}`;
+                renderFlashcards('All');
+            } else if (tabName === 'reference') {
+                document.getElementById('section-reference').classList.remove('hidden');
+                referenceTabBtn.className = `flex items-center space-x-2 px-3 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${activeClass}`;
             }
         }
 
-        /* ==========================================================================
-           TAB 1: IPO SCENARIOS & SIMULATOR (Strict 3 Stages: Input -> Process -> Output)
-           ========================================================================== */
-        const IPO_SCENARIOS = {
-            desktop: {
-                title1: 'Keyboard',
-                desc1: 'User enters text characters and commands into the computer.',
-                icon1: 'fa-keyboard',
-                title2: 'Computer / CPU',
-                desc2: 'Analyzes gathered data and processes instructions.',
-                icon2: 'fa-microchip',
-                title3: 'Monitor Screen',
-                desc3: 'Displays the final, processed text results for the user.',
-                icon3: 'fa-desktop'
-            },
-            math: {
-                title1: 'Keyboard / Keypad',
-                desc1: 'User inputs math equation numbers (e.g. 25 + 75).',
-                icon1: 'fa-calculator',
-                title2: 'CPU (ALU Unit)',
-                desc2: 'Arithmetic & Logic Unit calculates the exact math result (100).',
-                icon2: 'fa-gears',
-                title3: 'Monitor Display',
-                desc3: 'Outputs number 100 clearly on the calculator screen.',
-                icon3: 'fa-display'
-            },
-            camera: {
-                title1: 'PC Video Camera / Microphone',
-                desc1: 'Captures live video frames and voice sound input.',
-                icon1: 'fa-video',
-                title2: 'System Processor',
-                desc2: 'Encodes video stream and adjusts color brightness.',
-                icon2: 'fa-sliders',
-                title3: 'Monitor & Desktop Speakers',
-                desc3: 'Displays video feed and outputs clear sound through speakers.',
-                icon3: 'fa-tv'
-            }
-        };
+        function startGame() {
+            // Shuffle hardware items
+            currentGameItems = [...HARDWARE_ITEMS].sort(() => Math.random() - 0.5);
+            currentItemIndex = 0;
+            score = 0;
+            streak = 0;
+            maxStreak = 0;
+            correctCount = 0;
+            secondsElapsed = 0;
+            userResponses = [];
 
-        function loadIPOScenario(scenKey) {
-            playSound('click');
-            const data = IPO_SCENARIOS[scenKey];
-            if (!data) return;
+            // UI view state reset
+            document.getElementById('game-start-view').classList.add('hidden');
+            document.getElementById('game-summary-view').classList.add('hidden');
+            document.getElementById('game-active-view').classList.remove('hidden');
 
-            document.querySelectorAll('.scen-btn').forEach(btn => {
-                btn.className = "scen-btn px-4 py-2.5 rounded-xl font-extrabold text-base bg-slate-100 text-slate-700 hover:bg-slate-200";
-            });
-            const selectedBtn = document.getElementById('btn-scen-' + scenKey);
-            if (selectedBtn) selectedBtn.className = "scen-btn px-4 py-2.5 rounded-xl font-extrabold text-base bg-indigo-600 text-white shadow";
+            document.getElementById('game-history-log').innerHTML = '<span class="text-xs text-slate-400 italic self-center">Answer items to see your progress history here...</span>';
+            document.getElementById('total-items-num').innerText = currentGameItems.length;
 
-            document.getElementById('ipo-title-1').innerText = data.title1;
-            document.getElementById('ipo-desc-1').innerText = data.desc1;
-            document.getElementById('ipo-icon-1').innerHTML = `<i class="fa-solid ${data.icon1}"></i>`;
-
-            document.getElementById('ipo-title-2').innerText = data.title2;
-            document.getElementById('ipo-desc-2').innerText = data.desc2;
-            document.getElementById('ipo-icon-2').innerHTML = `<i class="fa-solid ${data.icon2}"></i>`;
-
-            document.getElementById('ipo-title-3').innerText = data.title3;
-            document.getElementById('ipo-desc-3').innerText = data.desc3;
-            document.getElementById('ipo-icon-3').innerHTML = `<i class="fa-solid ${data.icon3}"></i>`;
+            updateScoreUI();
+            startTimer();
+            loadCurrentItem();
         }
 
-        function runIPOSimulation() {
-            playSound('correct');
-            const statusEl = document.getElementById('ipo-sim-status');
-            const step1 = document.getElementById('ipo-step-1');
-            const step2 = document.getElementById('ipo-step-2');
-            const step3 = document.getElementById('ipo-step-3');
-
-            step1.classList.remove('glow-active');
-            step2.classList.remove('glow-active');
-            step3.classList.remove('glow-active');
-
-            statusEl.innerText = "📥 Stage 1: Accepting INPUT data...";
-            step1.classList.add('glow-active');
-
-            setTimeout(() => {
-                step1.classList.remove('glow-active');
-                step2.classList.add('glow-active');
-                statusEl.innerText = "⚙️ Stage 2: Computer / CPU PROCESSING data...";
-                playSound('click');
-            }, 1200);
-
-            setTimeout(() => {
-                step2.classList.remove('glow-active');
-                step3.classList.add('glow-active');
-                statusEl.innerText = "🖥️ Stage 3: Displaying final OUTPUT result...";
-                playSound('click');
-            }, 2400);
-
-            setTimeout(() => {
-                step3.classList.remove('glow-active');
-                statusEl.innerText = "✅ IPO Cycle Complete! (Input -> Process -> Output)";
-                addXP(30);
-            }, 3600);
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                const secs = String(secondsElapsed % 60).padStart(2, '0');
+                document.getElementById('game-timer-display').innerText = `${mins}:${secs}`;
+            }, 1000);
         }
 
-        /* ==========================================================================
-           TAB 2: PERIPHERALS DECK DATA & FLIP CARDS
-           ========================================================================== */
-        const PERIPHERALS_DATA = [
-            {
-                id: 'keyboard',
-                name: 'Keyboard',
-                category: 'INPUT',
-                icon: 'fa-keyboard',
-                connection: 'USB ports / Wireless (2.4 GHz, Bluetooth)',
-                description: 'An input peripheral that allows users to enter data into a computer and converts the data into a computer-readable form.'
-            },
-            {
-                id: 'mouse',
-                name: 'Wireless Mouse',
-                category: 'INPUT',
-                icon: 'fa-mouse',
-                connection: 'USB receiver / Bluetooth',
-                description: 'An input device that moves a pointer on the screen and selects objects.'
-            },
-            {
-                id: 'microphone',
-                name: 'USB Microphone',
-                category: 'INPUT',
-                icon: 'fa-microphone',
-                connection: 'USB port / 3.5 mm audio connector',
-                description: 'Captures voice sound waves and converts them into computer digital audio signals.'
-            },
-            {
-                id: 'scanner',
-                name: 'Document Scanner',
-                category: 'INPUT',
-                icon: 'fa-print',
-                connection: 'USB cable',
-                description: 'Scans paper documents and images into digital image files for the computer.'
-            },
-            {
-                id: 'camera',
-                name: 'PC Video Camera (Webcam)',
-                category: 'INPUT',
-                icon: 'fa-camera-retro',
-                connection: 'USB port',
-                description: 'Captures live video input for video calls, streaming, and photo recording.'
-            },
-            {
-                id: 'monitor',
-                name: 'Monitor',
-                category: 'OUTPUT',
-                icon: 'fa-desktop',
-                connection: 'HDMI, DisplayPort, VGA, DVI ports',
-                description: 'An output peripheral that translates computer processes into visual images humans can understand.'
-            },
-            {
-                id: 'printer',
-                name: 'Printer',
-                category: 'OUTPUT',
-                icon: 'fa-file-invoice',
-                connection: 'USB port / Wi-Fi',
-                description: 'Translates computer digital documents into printed physical paper pages.'
-            },
-            {
-                id: 'speakers',
-                name: 'Desktop Speakers',
-                category: 'OUTPUT',
-                icon: 'fa-volume-high',
-                connection: '3.5 mm connector and port / Bluetooth',
-                description: 'Outputs digital audio information as physical sound waves you can hear.'
-            },
-            {
-                id: 'ssd',
-                name: 'Solid-State Drive (SSD)',
-                category: 'STORAGE',
-                icon: 'fa-hard-drive',
-                connection: 'M.2 slot / SATA socket / Portable USB',
-                description: 'A storage peripheral used to store data, operating system, and application software permanently.'
-            },
-            {
-                id: 'flashdrive',
-                name: 'USB Flash Drive',
-                category: 'STORAGE',
-                icon: 'fa-usb',
-                connection: 'USB port',
-                description: 'Portable storage peripheral used to easily transfer files between computers.'
-            },
-            {
-                id: 'harddisk',
-                name: 'Hard Disk Drive',
-                category: 'STORAGE',
-                icon: 'fa-database',
-                connection: 'SATA socket',
-                description: 'Magnetic storage peripheral used to save large amounts of files and programs.'
-            }
-        ];
-
-        let pCurrentDeck = [...PERIPHERALS_DATA];
-        let pCurrentIndex = 0;
-        let pIsFlipped = false;
-
-        function updatePeripheralUI() {
-            const item = pCurrentDeck[pCurrentIndex];
-            if (!item) return;
-
-            pIsFlipped = false;
-            document.getElementById('p-active-card').classList.remove('rotate-y-180');
-
-            document.getElementById('p-badge').innerText = item.category + ' PERIPHERAL';
-            document.getElementById('p-icon').innerHTML = `<i class="fa-solid ${item.icon}"></i>`;
-            document.getElementById('p-title').innerText = item.name;
-
-            document.getElementById('p-back-title').innerText = item.name;
-            document.getElementById('p-back-conn').innerText = item.category;
-            document.getElementById('p-back-desc').innerText = item.description;
-            document.getElementById('p-back-class').innerText = item.category + ' Peripheral';
-            document.getElementById('p-back-ports').innerText = item.connection;
-
-            document.getElementById('p-counter').innerText = `Device ${pCurrentIndex + 1} of ${pCurrentDeck.length}`;
+        function updateScoreUI() {
+            document.getElementById('game-score-display').innerText = score;
+            document.getElementById('game-streak-display').innerText = `${streak}x`;
         }
 
-        function flipPeripheralCard() {
-            playSound('flip');
-            pIsFlipped = !pIsFlipped;
-            const card = document.getElementById('p-active-card');
-            if (pIsFlipped) {
-                card.classList.add('rotate-y-180');
-            } else {
-                card.classList.remove('rotate-y-180');
+        function loadCurrentItem() {
+            if (currentItemIndex >= currentGameItems.length) {
+                endGame();
+                return;
             }
+
+            const item = currentGameItems[currentItemIndex];
+
+            // Update Progress Bar
+            const percent = Math.round((currentItemIndex / currentGameItems.length) * 100);
+            document.getElementById('current-item-num').innerText = currentItemIndex + 1;
+            document.getElementById('game-progress-percent').innerText = `${percent}%`;
+            document.getElementById('game-progress-bar').style.width = `${percent}%`;
+
+            // Card content
+            document.getElementById('card-id-tag').innerText = `Item ${currentItemIndex + 1}/${currentGameItems.length}`;
+            document.getElementById('active-item-name').innerText = item.name;
+            document.getElementById('active-item-description').innerText = item.description;
+
+            // Icon
+            const iconElem = document.getElementById('active-item-icon');
+            iconElem.className = `fa-solid ${item.icon}`;
         }
 
-        function nextPeripheralCard() {
-            playSound('click');
-            if (pCurrentIndex < pCurrentDeck.length - 1) {
-                pCurrentIndex++;
-            } else {
-                pCurrentIndex = 0;
-            }
-            updatePeripheralUI();
-        }
+        /* User chooses category -> Immediate response */
+        function submitAnswer(selectedCategory) {
+            const currentItem = currentGameItems[currentItemIndex];
+            const isCorrect = selectedCategory === currentItem.category;
 
-        function prevPeripheralCard() {
-            playSound('click');
-            if (pCurrentIndex > 0) {
-                pCurrentIndex--;
-            } else {
-                pCurrentIndex = pCurrentDeck.length - 1;
-            }
-            updatePeripheralUI();
-        }
-
-        function filterPeripherals(category) {
-            playSound('click');
-            document.querySelectorAll('.p-filter-btn').forEach(btn => {
-                btn.className = "p-filter-btn px-4 py-2 rounded-xl font-extrabold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200";
-            });
-            event.target.className = "p-filter-btn px-4 py-2 rounded-xl font-extrabold text-sm bg-indigo-600 text-white shadow";
-
-            if (category === 'ALL') {
-                pCurrentDeck = [...PERIPHERALS_DATA];
-            } else {
-                pCurrentDeck = PERIPHERALS_DATA.filter(item => item.category === category);
-            }
-            pCurrentIndex = 0;
-            updatePeripheralUI();
-        }
-
-        /* ==========================================================================
-           TAB 3: GUESS THE PERIPHERAL GAME LOGIC
-           ========================================================================== */
-        const GUESS_QUESTIONS = [
-            {
-                correctId: 'keyboard',
-                category: 'INPUT',
-                clue1: 'Classified as an INPUT Peripheral.',
-                clue2: 'Allows users to enter text, numbers, and commands into the computer.',
-                clue3: 'Connects using USB ports or wireless (2.4 GHz, Bluetooth).',
-                options: ['Keyboard', 'Monitor', 'Solid-State Drive', 'Desktop Speakers']
-            },
-            {
-                correctId: 'monitor',
-                category: 'OUTPUT',
-                clue1: 'Classified as an OUTPUT Peripheral.',
-                clue2: 'Translates computer processes into glowing visual images humans can understand.',
-                clue3: 'Connects via HDMI, DisplayPort, VGA, or DVI ports.',
-                options: ['Document Scanner', 'Monitor', 'USB Microphone', 'Hard Disk Drive']
-            },
-            {
-                correctId: 'speakers',
-                category: 'OUTPUT',
-                clue1: 'Classified as an OUTPUT Peripheral.',
-                clue2: 'Converts digital audio information into physical sound waves you can hear.',
-                clue3: 'Plugs into a 3.5 mm connector and port or connects via Bluetooth.',
-                options: ['Desktop Speakers', 'PC Video Camera', 'Wireless Mouse', 'SSD']
-            },
-            {
-                correctId: 'microphone',
-                category: 'INPUT',
-                clue1: 'Classified as an INPUT Peripheral.',
-                clue2: 'Captures voice sound waves and converts them into computer-readable digital audio.',
-                clue3: 'Plugs in using a USB port or a 3.5 mm audio connector.',
-                options: ['Printer', 'USB Microphone', 'Monitor', 'USB Flash Drive']
-            },
-            {
-                correctId: 'ssd',
-                category: 'STORAGE',
-                clue1: 'Classified as a STORAGE Peripheral.',
-                clue2: 'Used to store data, operating systems, and application software permanently.',
-                clue3: 'Connects to M.2 slot or SATA socket on the motherboard.',
-                options: ['Solid-State Drive (SSD)', 'Keyboard', 'PC Video Camera', 'Desktop Speakers']
-            }
-        ];
-
-        let gIndex = 0;
-        let gClueLevel = 1;
-        let gPoints = 300;
-        let gStreak = 0;
-
-        function loadGuessQuestion() {
-            const q = GUESS_QUESTIONS[gIndex];
-            if (!q) return;
-
-            gClueLevel = 1;
-            gPoints = 300;
-
-            document.getElementById('guess-round-num').innerText = `Mystery Device #${gIndex + 1} of ${GUESS_QUESTIONS.length}`;
-            document.getElementById('guess-points-possible').innerText = `Reward: ${gPoints} XP`;
-
-            document.getElementById('clue-text-1').innerText = `Category: ${q.category} Peripheral • ${q.clue1}`;
-            document.getElementById('clue-text-2').innerText = 'Click "Reveal Next Hint" to unlock (-100 XP penalty).';
-            document.getElementById('clue-text-3').innerText = 'Click "Reveal Next Hint" to unlock (-100 XP penalty).';
-
-            document.getElementById('clue-box-2').classList.add('opacity-40');
-            document.getElementById('clue-box-3').classList.add('opacity-40');
-            document.getElementById('btn-unlock-clue').classList.remove('hidden');
-
-            const optionsContainer = document.getElementById('guess-options');
-            optionsContainer.innerHTML = '';
-
-            const shuffled = [...q.options].sort(() => Math.random() - 0.5);
-
-            shuffled.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = "guess-opt-btn bg-slate-50 hover:bg-indigo-50 border-2 border-slate-200 hover:border-indigo-400 rounded-2xl p-4 text-left font-extrabold text-slate-800 transition-all flex items-center justify-between text-lg";
-                btn.innerHTML = `<span>${opt}</span> <i class="fa-regular fa-circle text-slate-300"></i>`;
-                btn.onclick = () => checkGuessAnswer(opt);
-                optionsContainer.appendChild(btn);
+            userResponses.push({
+                item: currentItem,
+                selected: selectedCategory,
+                correct: isCorrect
             });
 
-            const fb = document.getElementById('guess-feedback');
-            fb.className = "hidden rounded-2xl p-4 text-center font-extrabold text-lg";
-            document.getElementById('btn-next-guess').classList.add('hidden');
-        }
+            if (isCorrect) {
+                streak++;
+                if (streak > maxStreak) maxStreak = streak;
+                const pointsGained = 100 + (streak > 1 ? (streak - 1) * 20 : 0);
+                score += pointsGained;
+                correctCount++;
 
-        function revealNextGuessClue() {
-            playSound('click');
-            const q = GUESS_QUESTIONS[gIndex];
-            if (gClueLevel === 1) {
-                gClueLevel = 2;
-                gPoints = 200;
-                document.getElementById('clue-text-2').innerText = q.clue2;
-                document.getElementById('clue-box-2').classList.remove('opacity-40');
-            } else if (gClueLevel === 2) {
-                gClueLevel = 3;
-                gPoints = 100;
-                document.getElementById('clue-text-3').innerText = q.clue3;
-                document.getElementById('clue-box-3').classList.remove('opacity-40');
-                document.getElementById('btn-unlock-clue').classList.add('hidden');
-            }
-            document.getElementById('guess-points-possible').innerText = `Reward: ${gPoints} XP`;
-        }
-
-        function checkGuessAnswer(selectedName) {
-            const q = GUESS_QUESTIONS[gIndex];
-            const correctItem = PERIPHERALS_DATA.find(p => p.id === q.correctId);
-            const fb = document.getElementById('guess-feedback');
-            fb.classList.remove('hidden');
-
-            document.querySelectorAll('.guess-opt-btn').forEach(btn => btn.disabled = true);
-
-            if (selectedName === correctItem.name) {
                 playSound('correct');
-                gStreak++;
-                document.getElementById('guess-streak').innerText = `${gStreak} 🔥`;
-                addXP(gPoints);
-
-                fb.className = "rounded-2xl p-4 text-center font-extrabold text-lg bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
-                fb.innerHTML = `🎉 Correct! It is the <strong>${correctItem.name}</strong>! (+${gPoints} XP)`;
-                triggerConfetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
+                showToast(true, `Correct! ${currentItem.name} is ${currentItem.category}`, `+${pointsGained} pts`);
             } else {
-                playSound('wrong');
-                gStreak = 0;
-                document.getElementById('guess-streak').innerText = `0 🔥`;
-
-                fb.className = "rounded-2xl p-4 text-center font-extrabold text-lg bg-rose-100 text-rose-950 border-2 border-rose-300";
-                fb.innerHTML = `❌ Not quite! The correct peripheral was <strong>${correctItem.name}</strong>.`;
+                streak = 0;
+                playSound('incorrect');
+                showToast(false, `Incorrect. ${currentItem.name} is an ${currentItem.category} device`, `0 pts`);
             }
 
-            document.getElementById('btn-next-guess').classList.remove('hidden');
+            updateScoreUI();
+            addLogBadge(currentItem.name, isCorrect, currentItem.category);
+
+            // Move forward immediately to next item
+            currentItemIndex++;
+            setTimeout(() => {
+                loadCurrentItem();
+            }, 300);
         }
 
-        function loadNextGuessQuestion() {
-            playSound('click');
-            if (gIndex < GUESS_QUESTIONS.length - 1) {
-                gIndex++;
+        function showToast(isCorrect, message, pointsText) {
+            const toast = document.getElementById('game-feedback-toast');
+            const icon = document.getElementById('toast-icon');
+            const msg = document.getElementById('toast-message');
+            const pts = document.getElementById('toast-points');
+
+            msg.innerText = message;
+            pts.innerText = pointsText;
+
+            if (isCorrect) {
+                toast.className = "w-full mt-4 p-3 rounded-2xl border text-sm font-semibold flex items-center justify-between opacity-100 transition-all duration-300 transform translate-y-0 bg-emerald-50 border-emerald-200 text-emerald-800 shadow-sm";
+                icon.className = "fa-solid fa-circle-check text-emerald-600 text-lg";
             } else {
-                gIndex = 0;
+                toast.className = "w-full mt-4 p-3 rounded-2xl border text-sm font-semibold flex items-center justify-between opacity-100 transition-all duration-300 transform translate-y-0 bg-rose-50 border-rose-200 text-rose-800 shadow-sm";
+                icon.className = "fa-solid fa-circle-xmark text-rose-600 text-lg";
             }
-            loadGuessQuestion();
+
+            // Hide after brief moment
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 1800);
         }
 
-        /* ==========================================================================
-           TAB 5: MASTERY QUIZ (Strictly aligned with PDF notes)
-           ========================================================================== */
-        const QUIZ_QUESTIONS = [
-            {
-                q: 'What are the three core stages of a computer\'s functional cycle?',
-                options: ['Input, Processing, Output', 'Keyboard, CPU, Mouse', 'Storage, Memory, Internet', 'Input, Storage, Output'],
-                answer: 0,
-                explanation: 'Section 1.1: A computer functionality is built on three core stages: Input, Processing, and Output.'
-            },
-            {
-                q: 'Which component handles the processing step on a desktop computer?',
-                options: ['Monitor', 'Keyboard', 'Central Processing Unit (CPU)', 'Printer'],
-                answer: 2,
-                explanation: 'Section 1.1: The Central Processing Unit (CPU) handles the processing stage.'
-            },
-            {
-                q: 'What is the main function of an Input Peripheral?',
-                options: ['To translate computer processes into human readable form', 'To allow users to enter data and convert it into computer-readable form', 'To store applications permanently', 'To supply electrical power'],
-                answer: 1,
-                explanation: 'Section 1.2: Input peripherals allow users to enter data and convert it into computer-readable form.'
-            },
-            {
-                q: 'Which of the following is an example of an OUTPUT peripheral?',
-                options: ['Keyboard', 'Document Scanner', 'Monitor', 'USB Microphone'],
-                answer: 2,
-                explanation: 'Section 1.2: A monitor is an output peripheral that displays visual results.'
-            },
-            {
-                q: 'Which part of the CPU performs mathematical calculations (+, -, ×, ÷) and logic comparisons (AND, OR, NOT)?',
-                options: ['Control Unit (CU)', 'Arithmetic and Logic Unit (ALU)', 'Cache Memory', 'RAM Slot'],
-                answer: 1,
-                explanation: 'Section 1.4.2: The Arithmetic and Logic Unit (ALU) handles all math calculations and logical comparisons.'
-            },
-            {
-                q: 'What is the primary characteristic of RAM (Random Access Memory)?',
-                options: ['Non-volatile and cannot be rewritten', 'Volatile (data lost when power is off) and stores temporary data for processing', 'Used only to print documents', 'Stores permanent firmware'],
-                answer: 1,
-                explanation: 'Section 1.4.4: RAM is volatile memory that stores temporary data for fast processing.'
-            },
-            {
-                q: 'What type of memory retains stored information even when the computer power is turned off?',
-                options: ['Volatile Memory', 'RAM', 'Non-volatile Memory (like ROM)', 'Cache Memory'],
-                answer: 2,
-                explanation: 'Section 1.4.4: Non-volatile memory (like ROM) retains information even without power.'
-            },
-            {
-                q: 'Which connection port is commonly used for Display Output Devices like monitors?',
-                options: ['3.5 mm Audio Jack', 'HDMI / DisplayPort / VGA', 'SATA socket', 'RAM slot'],
-                answer: 1,
-                explanation: 'Section 1.3: Display output devices connect via HDMI, DisplayPort, VGA, or DVI ports.'
-            },
-            {
-                q: 'What is the main circuit board inside a system unit called?',
-                options: ['System Bus', 'Motherboard', 'Control Unit', 'Hard Disk Drive'],
-                answer: 1,
-                explanation: 'Section 1.4.1: The main board is commonly called the motherboard.'
-            },
-            {
-                q: 'What does the Control Unit (CU) inside the CPU do?',
-                options: ['Fetches and interprets instructions and directs system operations', 'Displays colors on screen', 'Stores paper sheets', 'Outputs sound to speakers'],
-                answer: 0,
-                explanation: 'Section 1.4.2: The Control Unit (CU) directs operations by fetching and interpreting instructions.'
+        function addLogBadge(itemName, isCorrect, category) {
+            const logContainer = document.getElementById('game-history-log');
+            if (currentItemIndex === 0) {
+                logContainer.innerHTML = '';
             }
-        ];
 
-        let qIndex = 0;
-        let qScore = 0;
+            const badge = document.createElement('div');
+            badge.className = `flex-shrink-0 px-2.5 py-1 rounded-xl text-xs font-semibold flex items-center space-x-1.5 border shadow-2xs ${
+                isCorrect 
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
+                : 'bg-rose-50 border-rose-200 text-rose-800'
+            }`;
 
-        function startQuiz() {
-            playSound('click');
-            qIndex = 0;
-            qScore = 0;
-            document.getElementById('quiz-start-screen').classList.add('hidden');
-            document.getElementById('quiz-results-screen').classList.add('hidden');
-            document.getElementById('quiz-active-screen').classList.remove('hidden');
-            renderQuizQuestion();
+            badge.innerHTML = `
+                <i class="fa-solid ${isCorrect ? 'fa-check text-emerald-600' : 'fa-xmark text-rose-600'}"></i>
+                <span>${itemName}</span>
+            `;
+
+            logContainer.prepend(badge);
         }
 
-        function renderQuizQuestion() {
-            const q = QUIZ_QUESTIONS[qIndex];
-            if (!q) return;
+        function endGame() {
+            clearInterval(timerInterval);
+            playSound('complete');
 
-            document.getElementById('quiz-progress-text').innerText = `Question ${qIndex + 1} of ${QUIZ_QUESTIONS.length}`;
-            document.getElementById('quiz-progress-bar').style.width = `${((qIndex + 1) / QUIZ_QUESTIONS.length) * 100}%`;
+            document.getElementById('game-active-view').classList.add('hidden');
+            document.getElementById('game-summary-view').classList.remove('hidden');
 
-            document.getElementById('quiz-question-title').innerText = q.q;
+            // Format summary stats
+            const accuracy = Math.round((correctCount / currentGameItems.length) * 100);
+            const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+            const secs = String(secondsElapsed % 60).padStart(2, '0');
 
-            const grid = document.getElementById('quiz-options-grid');
-            grid.innerHTML = '';
+            document.getElementById('summary-score').innerText = score;
+            document.getElementById('summary-time').innerText = `${mins}:${secs}`;
+            document.getElementById('summary-accuracy').innerText = `${accuracy}%`;
+            document.getElementById('summary-streak').innerText = `${maxStreak}x`;
 
-            const expBox = document.getElementById('quiz-explanation');
-            expBox.className = "hidden p-4 rounded-2xl text-base font-bold";
-            document.getElementById('quiz-next-btn').classList.add('hidden');
+            // Render breakdown list
+            const breakdownList = document.getElementById('summary-breakdown-list');
+            breakdownList.innerHTML = '';
 
-            q.options.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = "quiz-opt-btn w-full bg-slate-50 hover:bg-indigo-50 border-2 border-slate-200 hover:border-indigo-400 rounded-2xl p-4 text-left font-extrabold text-slate-800 transition-all flex items-center justify-between text-lg";
-                btn.innerHTML = `<span>${opt}</span> <i class="fa-regular fa-circle text-slate-300"></i>`;
-                btn.onclick = () => checkQuizAnswer(idx);
-                grid.appendChild(btn);
+            userResponses.forEach((res, idx) => {
+                const row = document.createElement('div');
+                row.className = "p-3 sm:p-4 flex items-center justify-between hover:bg-slate-50 transition-colors";
+
+                let catBadgeColor = "bg-slate-100 text-slate-700";
+                if (res.item.category === "Input") catBadgeColor = "bg-blue-100 text-blue-800 border-blue-200";
+                if (res.item.category === "Processing") catBadgeColor = "bg-purple-100 text-purple-800 border-purple-200";
+                if (res.item.category === "Output") catBadgeColor = "bg-emerald-100 text-emerald-800 border-emerald-200";
+                if (res.item.category === "Storage") catBadgeColor = "bg-amber-100 text-amber-800 border-amber-200";
+
+                row.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${res.correct ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
+                            <i class="fa-solid ${res.correct ? 'fa-check' : 'fa-xmark'}"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 text-sm">${res.item.name}</div>
+                            <div class="text-xs text-slate-500">Selected: <span class="${res.correct ? 'text-slate-600 font-medium' : 'text-rose-600 font-bold'}">${res.selected}</span></div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs px-2.5 py-1 rounded-full font-semibold border ${catBadgeColor}">${res.item.category}</span>
+                    </div>
+                `;
+                breakdownList.appendChild(row);
             });
         }
 
-        function checkQuizAnswer(selectedIndex) {
-            const q = QUIZ_QUESTIONS[qIndex];
-            const expBox = document.getElementById('quiz-explanation');
-            expBox.classList.remove('hidden');
+        function renderFlashcards(filterCat = 'All') {
+            const container = document.getElementById('flashcards-container');
+            container.innerHTML = '';
 
-            document.querySelectorAll('.quiz-opt-btn').forEach(btn => btn.disabled = true);
+            const filteredItems = filterCat === 'All' 
+                ? HARDWARE_ITEMS 
+                : HARDWARE_ITEMS.filter(item => item.category === filterCat);
 
-            if (selectedIndex === q.answer) {
-                playSound('correct');
-                qScore++;
-                expBox.className = "p-4 rounded-2xl text-base font-extrabold bg-emerald-100 text-emerald-950 border-2 border-emerald-300";
-                expBox.innerHTML = `✅ <strong>Correct!</strong> ${q.explanation}`;
-            } else {
-                playSound('wrong');
-                expBox.className = "p-4 rounded-2xl text-base font-extrabold bg-rose-100 text-rose-950 border-2 border-rose-300";
-                expBox.innerHTML = `❌ <strong>Not quite!</strong> ${q.explanation}`;
-            }
+            filteredItems.forEach(item => {
+                let catBadgeStyle = "bg-blue-100 text-blue-900 border-blue-200";
+                if (item.category === "Processing") catBadgeStyle = "bg-purple-100 text-purple-900 border-purple-200";
+                if (item.category === "Output") catBadgeStyle = "bg-emerald-100 text-emerald-900 border-emerald-200";
+                if (item.category === "Storage") catBadgeStyle = "bg-amber-100 text-amber-900 border-amber-200";
 
-            document.getElementById('quiz-next-btn').classList.remove('hidden');
+                const cardWrapper = document.createElement('div');
+                cardWrapper.className = "perspective-1000 h-[340px] w-full cursor-pointer group";
+                cardWrapper.onclick = function() {
+                    const inner = this.querySelector('.card-flip-inner');
+                    inner.classList.toggle('rotate-y-180');
+                };
+
+                cardWrapper.innerHTML = `
+                    <div class="card-flip-inner relative w-full h-full transform-style-3d shadow-sm hover:shadow-md transition-all rounded-2xl border border-slate-200">
+                        
+                        <!-- Front Face -->
+                        <div class="absolute inset-0 bg-white rounded-2xl p-6 flex flex-col items-center justify-between backface-hidden">
+                            <div class="w-full flex justify-between items-center">
+                                <span class="text-xs sm:text-sm font-extrabold px-3 py-1 rounded-full border ${catBadgeStyle}">${item.category}</span>
+                                <i class="fa-solid fa-arrows-rotate text-slate-400 text-sm group-hover:text-blue-500 transition-colors"></i>
+                            </div>
+
+                            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-4xl sm:text-5xl text-blue-600 shadow-inner my-2">
+                                <i class="fa-solid ${item.icon}"></i>
+                            </div>
+
+                            <div class="text-center">
+                                <h3 class="font-extrabold text-slate-900 text-lg sm:text-xl mb-1">${item.name}</h3>
+                                <p class="text-xs text-slate-500 font-medium">Click card to see details</p>
+                            </div>
+
+                            <div class="w-full pt-2 border-t border-slate-100 text-center text-xs sm:text-sm text-blue-600 font-bold flex items-center justify-center space-x-1">
+                                <span>Learn Definition</span>
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Back Face -->
+                        <div class="absolute inset-0 bg-slate-900 text-white rounded-2xl p-6 flex flex-col justify-between backface-hidden rotate-y-180">
+                            <div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs uppercase tracking-wider font-extrabold text-blue-400">${item.category} Hardware</span>
+                                    <i class="fa-solid fa-arrows-rotate text-slate-400 text-sm"></i>
+                                </div>
+                                <h4 class="font-extrabold text-white text-lg sm:text-xl mb-2">${item.name}</h4>
+                                <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium mb-3">${item.description}</p>
+                            </div>
+
+                            <div class="bg-slate-800/90 p-3 rounded-xl border border-slate-700/60">
+                                <span class="text-xs font-bold uppercase text-amber-400 block mb-1">
+                                    <i class="fa-solid fa-lightbulb"></i> Did you know?
+                                </span>
+                                <p class="text-xs sm:text-sm text-slate-300 italic leading-snug font-medium">${item.funFact}</p>
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+
+                container.appendChild(cardWrapper);
+            });
         }
 
-        function nextQuizQuestion() {
-            playSound('click');
-            if (qIndex < QUIZ_QUESTIONS.length - 1) {
-                qIndex++;
-                renderQuizQuestion();
-            } else {
-                showQuizResults();
-            }
+        function filterFlashcards(cat) {
+            document.querySelectorAll('.fc-filter-btn').forEach(btn => {
+                if (btn.getAttribute('data-cat') === cat) {
+                    btn.className = "fc-filter-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-blue-600 text-white shadow-sm";
+                } else {
+                    btn.className = "fc-filter-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200";
+                }
+            });
+            renderFlashcards(cat);
         }
 
-        function showQuizResults() {
-            document.getElementById('quiz-active-screen').classList.add('hidden');
-            document.getElementById('quiz-results-screen').classList.remove('hidden');
-
-            const pct = Math.round((qScore / QUIZ_QUESTIONS.length) * 100);
-            document.getElementById('quiz-final-score').innerText = `${pct}%`;
-
-            const fb = document.getElementById('quiz-final-feedback');
-            if (pct >= 80) {
-                fb.innerText = "🌟 Excellent! You scored over 80% and mastered the computer concepts!";
-                triggerConfetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
-                addXP(250);
-            } else if (pct >= 50) {
-                fb.innerText = "👍 Good job! Review the flashcard deck and retake to get 100%!";
-                addXP(100);
-            } else {
-                fb.innerText = "📚 Keep learning! Re-read the IPO cycle and system unit sections.";
-            }
-        }
-
-        /* ==========================================================================
-           INITIALIZATION ON WINDOW LOAD
-           ========================================================================== */
         window.onload = function() {
-            // Load Tab 1 default scenario
-            loadIPOScenario('desktop');
-
-            // Initialize Flashcards
-            updatePeripheralUI();
-
-            // Initialize Guessing Game
-            loadGuessQuestion();
+            renderFlashcards('All');
         };
     </script>
 </body>
